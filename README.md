@@ -3,7 +3,7 @@
 ### 自己构建固件环境
 
 ```
-git clone https://github.com/lihanxin/openwrt-docker-builder.git
+git clone https://github.com/lihaixin/openwrt-docker-builder.git
 cd openwrt-docker-builder
 docker build -t openwrt-docker-builder - < Dockerfile
 ```
