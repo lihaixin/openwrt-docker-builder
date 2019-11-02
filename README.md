@@ -5,7 +5,7 @@
 ```
 git clone https://github.com/lihaixin/openwrt-docker-builder.git
 cd openwrt-docker-builder
-docker build -t openwrt-docker-builder - < Dockerfile
+docker build -t lihaixin/openwrt-docker-builder - < Dockerfile
 ```
 或者直接下载镜像
 ```
