@@ -16,6 +16,7 @@ docker pull lihaixin/openwrt-docker-builder
 
 ```
 mkdir -p openwrt
+chmod +777 -R openwrt
 docker run --rm -it --user `id -u` --net=host -v `pwd`/openwrt:/home/sanjin lihaixin/openwrt-docker-builder
 git clone https://github.com/coolsnowwolf/lede && cd lede
 ./scripts/feeds update -a 
