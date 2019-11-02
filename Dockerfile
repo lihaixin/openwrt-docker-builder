@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV FORCE_UNSAFE_CONFIGURE=1
 
 RUN apt-get -y update  \
-    && apt-get -y upgrade \
+#    && apt-get -y upgrade \
     && apt-get install -y locales curl wget tzdata uuidgen\
     && locale-gen en_US.UTF-8 \
     && apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler \
