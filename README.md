@@ -21,6 +21,7 @@ docker run --rm -it --user `id -u` --net=host -v `pwd`/sanjin:/home/sanjin lihai
 git clone https://github.com/coolsnowwolf/lede && cd lede
 ./scripts/feeds update -a 
 ./scripts/feeds install -a
-make menuconfig 
+make menuconfig
+wget https://github.com/lihaixin/openwrt-docker-builder/raw/master/miniconfig
 ```
 
