@@ -1,4 +1,4 @@
-# lede 的 docker 编译环境
+# lean 的 OpenWRT 路由器固件 docker 编译环境
 
 ### 自己构建固件环境
 
