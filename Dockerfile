@@ -17,7 +17,7 @@ RUN apt-get -y update  \
 #    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
     && useradd -m sanjin \
     && usermod -s /bin/bash sanjin \
-    && echo -e "password\npassword" | (passwd sanjin) \
+#    && echo -e "password\npassword" | (passwd sanjin) \
     && chmod u+w /etc/sudoers \
     && echo "lede ALL=(ALL:ALL) ALL" >>/etc/sudoers \
     && chmod u-w /etc/sudoers
