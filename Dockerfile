@@ -1,7 +1,7 @@
 FROM ubuntu:14.04
 MAINTAINER sanjin <sanjin@gmail.com>
 ENV TZ=Asia/Shanghai
-ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 ENV DEBIAN_FRONTEND=noninteractive
 ENV FORCE_UNSAFE_CONFIGURE=1
 
@@ -16,7 +16,7 @@ RUN apt-get -y update  \
 #    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
     && useradd -m sanjin \
     && usermod -s /bin/bash sanjin \
-    && echo -e "password\npassword" | (passwd lede) \
+    && echo -e "password\npassword" | (passwd sanjin) \
     && chmod u+w /etc/sudoers \
     && echo "lede ALL=(ALL:ALL) ALL" >>/etc/sudoers \
     && chmod u-w /etc/sudoers
