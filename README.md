@@ -1,4 +1,4 @@
-# lean 的 OpenWRT 路由器固件 docker 编译环境
+# 使用Docker 构建 Lean 大雕的 OpenWRT 路由器固件 编译环境
 
 ### 自己构建固件环境
 
