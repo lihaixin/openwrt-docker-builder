@@ -1,21 +1,22 @@
 # 使用Docker 构建 Lean 大雕的 OpenWRT 路由器固件 编译环境
 
-### 生成镜像文件
+## 生成镜像文件
 
-自己使用源码创建容器镜像
+### 自己使用源码创建容器镜像
 ```
 git clone https://github.com/lihaixin/openwrt-docker-builder.git
 cd openwrt-docker-builder
 docker build -t lihaixin/openwrt-docker-builder - < Dockerfile
 ```
-或者直接下载现成镜像
+
+### 或者直接下载现成镜像
 ```
 docker pull lihaixin/openwrt-docker-builder
 ```
 
-### 运行容器
+## 运行容器
 
-自己更新到代码 根据自己设备配置菜单
+### 自己更新到代码 根据自己设备配置菜单
 
 ```
 mkdir -p sanjin
@@ -27,7 +28,9 @@ make menuconfig
 wget https://github.com/lihaixin/openwrt-docker-builder/raw/master/miniconfig
 ```
 
-集成代码，和dl目录，只需要更新
+### 集成代码，和dl目录，只需要更新
+
+dl文件夹内容总是下载不全，直接打包到固件里，免得每次由于下载失败导致编译出问题
 
 ```
 mkdir -p sanjin
@@ -36,7 +39,7 @@ docker run --rm -it --net=host -v `pwd`/sanjin:/home/sanjin/openwrt lihaixin/ope
 
 ```
 
-下面是集成代码的操作过程，记录使用，可以参考构建自己的镜像
+下面是把dl集成代码的操作过程，记录使用，可以参考构建自己的镜像
 
 ```
 mkdir -p sanjin
