@@ -32,6 +32,15 @@ wget https://github.com/lihaixin/openwrt-docker-builder/raw/master/miniconfig
 ```
 mkdir -p sanjin
 chmod +777 -R sanjin
+docker run --rm -it --net=host -v `pwd`/sanjin:/home/sanjin/openwrt lihaixin/openwrt-docker-builder:dl
+
+```
+
+下面是集成代码的操作过程，记录使用，可以参考构建自己的镜像
+
+```
+mkdir -p sanjin
+chmod +777 -R sanjin
 docker run -itd --name openwrt lihaixin/openwrt-docker-builder
 docker exec -it openwrt bash
 git clone https://github.com/coolsnowwolf/lede && cd lede
