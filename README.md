@@ -36,6 +36,10 @@ dl文件夹内容总是下载不全，直接打包到固件里，免得每次由
 mkdir -p sanjin
 chmod +777 -R sanjin
 docker run --rm -it --net=host -v `pwd`/sanjin:/home/sanjin/openwrt lihaixin/openwrt-docker-builder:dl
+cp -r ~/lede ~/openwrt
+cd openwrt
+git pull
+./scripts/feeds update -a && ./scripts/feeds install -a
 
 ```
 
@@ -59,4 +63,3 @@ docker commit openwrt lihaixin/openwrt-docker-builder:dl
 docker login
 docker push
 ```
-
