@@ -37,7 +37,7 @@ mkdir -p sanjin
 chmod +777 -R sanjin
 docker run --rm -it --net=host -v `pwd`/sanjin:/home/sanjin/openwrt lihaixin/openwrt-docker-builder:dl
 cp -r ~/lede ~/openwrt
-cd openwrt
+cd openwrt/lede
 git pull
 ./scripts/feeds update -a && ./scripts/feeds install -a
 
