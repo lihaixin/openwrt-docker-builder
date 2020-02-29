@@ -117,6 +117,17 @@ frp () {
     uci set frp.@proxy[1].use_compression='1'
     uci set frp.@proxy[1].remark=$routename-ttyd
     uci set frp.@proxy[1].subdomain=$routename-ttyd
+    
+    uci add frp proxy
+    uci set frp.@proxy[2].enable='1'
+    uci set frp.@proxy[2].type='http'
+    uci set frp.@proxy[2].domain_type='subdomain'
+    uci set frp.@proxy[2].local_port='1111'
+    uci set frp.@proxy[2].local_ip=$lanipaddr
+    uci set frp.@proxy[2].use_encryption='1'
+    uci set frp.@proxy[2].use_compression='1'
+    uci set frp.@proxy[2].remark=$routename-haproxy
+    uci set frp.@proxy[2].subdomain=$routename-haproxy
 
     uci commit frp
     /etc/init.d/frp stop
