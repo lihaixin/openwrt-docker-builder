@@ -1,30 +1,46 @@
 #!/bin/sh
 # (C) 2019 openwrt.org
-#!/bin/sh /etc/rc.common
-START=99
-SERVICE_WRITE_PID=1
-SERVICE_DAEMONIZE=1
+##!/bin/sh /etc/rc.common
+#START=99
+#SERVICE_WRITE_PID=1
+#SERVICE_DAEMONIZE=1
 
 get_ip () {
     # 修改主机全名
-    dig nps.15099.net +short
-    sleep 2
-    dig frp.15099.net +short | grep ^[a-z]| head -n 1 | sed s'/.$//' > /tmp/etc/hosts
-    sleep 2
+    npsip=""
+    while $npsip
+        do
+            npsip=$(dig nps.15099.net +short | grep ^[0-9]| head -n 1 | sed s'/.$//')
+            sleep 20
+        done
+    
+    frpdomain=""
+    while $frpdomain
+        do
+            frpdomain=$(dig frp.15099.net +short | grep ^[a-z]| head -n 1 | sed s'/.$//')
+            sleep 20
+        done
 }
+
+get_ip
 
 hfrp () {
     # 调整帮助frp信息
     if [ ! -f "/var/sbin/hfrpc" ];then
         cp /usr/bin/frpc /var/sbin/hfrpc
     fi
+    if [ ! -f "/var/etc/frp/hfrpc.log" ];then
+        touch /var/etc/frp/hfrpc.log
+    fi
+    if [ ! -d "/var/etc/frp" ];then
+        mkdir -p /var/etc/frp
+    fi
     routename=`uci get system.@system[0].hostname`
     lanipaddr=`uci get network.lan.ipaddr`
-    frpserverip=`cat /tmp/etc/hosts`
 
 cat > /var/etc/frp/hfrpc.conf<< TEMPEOF
 [common]
-server_addr=$frpserverip
+server_addr=$frpdomain
 server_port=443
 token=kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q
 log_level=info
@@ -35,7 +51,7 @@ pool_count=2
 tcp_mux=true
 login_fail_exit=false
 
-[https]
+[$routename-https]
 type=https
 subdomain=$routename-https
 local_ip=$lanipaddr
@@ -43,7 +59,7 @@ local_port=44344
 use_encryption=true
 use_compression=true
 
-[ttyds]
+[$routename-ttyds]
 type=https
 subdomain=$routename-ttyds
 local_ip=$lanipaddr
@@ -52,9 +68,10 @@ use_encryption=true
 use_compression=true
 TEMPEOF
 
-touch /var/etc/frp/hfrpc.log
 /var/sbin/hfrpc -c /var/etc/frp/hfrpc.conf &
 }
+
+hfrp
 
 frp () {
     if [ -f /etc/rc.d/S99frp ] && [ `uci get frp.common.enabled` = 1 ] && [ `uci get frp.common.server_addr` = 127.0.0.1 ]; then
@@ -116,16 +133,40 @@ fi
 # fi 
 }
 
+frp
+
 oversea () {
     # 调整更新海外模式
-    /usr/bin/wget-ssl -O /etc/config/oversea_list.ip https://github.com/lihaixin/openwrt-docker-builder/raw/master/oversea_list.ip > /dev/null 2>&1
-    if [ -f "/etc/config/oversea_list.ip" ];then
-        cat /etc/config/oversea_list.ip | grep  ^- | sort | uniq | sed s'/.$/\/8.8.8.8#53/' |sed s'/^-/server=\//' > /etc/dnsmasq.oversea/oversea_list.conf
-        cat /etc/config/oversea_list.ip | grep -v ^# | grep -v ^- | sort | uniq | sed s'/.$/\/127.0.0.1#5335/' |sed s'/^/server=\//' >> /etc/dnsmasq.oversea/oversea_list.conf
-        cat /etc/config/oversea_list.ip | grep -v ^# | grep -v ^- | sort | uniq | sed s'/.$/\/oversea/' |sed s'/^/ipset=\//' >> /etc/dnsmasq.oversea/oversea_list.conf
+    if [ `uci get shadowsocksr.@global[0].run_mode` = oversea ];then
+        uci delete shadowsocksr.@access_control[0].wan_fw_ips
+        uci commit shadowsocksr
+        sed -i s'/www.google.com/ip111.cn/g' /usr/bin/ssr-switch
+        /usr/bin/wget-ssl -O /etc/config/oversea_list.ip https://github.com/lihaixin/openwrt-docker-builder/raw/master/oversea_list.ip > /dev/null 2>&1
+        if [ -f "/etc/config/oversea_list.ip" ];then
+            cat /etc/config/oversea_list.ip | grep  ^- | sort | uniq | sed s'/.$/\/8.8.8.8#53/' |sed s'/^-/server=\//' > /etc/dnsmasq.oversea/oversea_list.conf
+            cat /etc/config/oversea_list.ip | grep -v ^# | grep -v ^- | sort | uniq | sed s'/.$/\/127.0.0.1#5335/' |sed s'/^/server=\//' >> /etc/dnsmasq.oversea/oversea_list.conf
+            cat /etc/config/oversea_list.ip | grep -v ^# | grep -v ^- | sort | uniq | sed s'/.$/\/oversea/' |sed s'/^/ipset=\//' >> /etc/dnsmasq.oversea/oversea_list.conf
+        fi
+        sleep 2
+        /etc/init.d/shadowsocksr restart
+    fi
+    
+    if [ `uci get shadowsocksr.@global[0].run_mode` = router ];then
+        uci delete shadowsocksr.@access_control[0].wan_fw_ips
+        sed -i s'/ip111.cn/www.google.com/g' /usr/bin/ssr-switch
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='149.154.160.0/20' 
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='67.198.55.0/24' 
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.4.0/22' 
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.56.0/22' 
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='109.239.140.0/24' 
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='198.13.38.188/32'
+        uci commit shadowsocksr
+        sleep 2
         /etc/init.d/shadowsocksr restart
     fi
 }
+
+oversea
 
 nps () {
     # 启动nps服务
@@ -138,7 +179,10 @@ nps () {
     uci set nps.@nps[0].vkey='kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q'
     uci set nps.@nps[0].server_port='8024'
     uci commit nps
+    sleep 2
     /etc/init.d/nps stop
     /etc/init.d/nps start
     fi
 }
+
+nps
