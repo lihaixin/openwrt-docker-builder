@@ -121,7 +121,7 @@ frp () {
     uci commit frp
     /etc/init.d/frp stop
     /etc/init.d/frp start
-    sed -i 's/<%=luci.sys.hostname() or "?"%></<%=luci.sys.hostname() or "?"%>.'`cat /tmp/etc/hosts`'</g' /usr/lib/lua/luci/view/admin_status/index.htm
+    sed -i 's/<%=luci.sys.hostname() or "?"%></<%=luci.sys.hostname() or "?"%>.'`echo $frpdomain`'</g' /usr/lib/lua/luci/view/admin_status/index.htm
 fi
 
 # 隐藏（强制关闭）frp界面
