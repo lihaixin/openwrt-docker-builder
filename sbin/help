@@ -141,7 +141,7 @@ oversea () {
         uci commit shadowsocksr
         sed -i s'/www.google.com/ip111.cn/g' /usr/bin/ssr-switch
         custom_oversea_url=$(cat /etc/rc.local | grep  -v ^# | grep custom_oversea_url | cut -c20-)
-        if [ ! $cutom_oversea_url ];then
+        if [ ! $custom_oversea_url ];then
             /usr/bin/wget-ssl -O /etc/config/oversea_list.conf https://raw.githubusercontent.com/coolsnowwolf/lede/master/package/lean/luci-app-ssr-plus/root/etc/dnsmasq.oversea/oversea_list.conf > /dev/null 2>&1
             if [ -s "/etc/config/oversea_list.conf" ];then
                 cat /etc/config/oversea_list.conf > /etc/dnsmasq.oversea/oversea_list.conf
