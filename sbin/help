@@ -1,6 +1,6 @@
 #!/bin/sh
 # (C) 2019 openwrt.org
-# wget https://raw.githubusercontent.com/lihaixin/openwrt-docker-builder/master/sbin/help
+# wget https://raw.githubusercontent.com/lihaixin/openwrt-docker-builder/master/sbin/help -O /sbin/help
 get_ip () {
     # 修改主机全名
     npsip=""
