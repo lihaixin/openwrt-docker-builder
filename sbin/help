@@ -148,7 +148,12 @@ frp
 oversea () {
     # 调整更新海外模式
     if [ `uci get shadowsocksr.@global[0].run_mode` = oversea ];then
-        uci delete shadowsocksr.@access_control[0].wan_fw_ips
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='149.154.160.0/20' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='67.198.55.0/24' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.4.0/22' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.56.0/22' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='109.239.140.0/24' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='198.13.38.188/32'
         uci add_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.222.222/32'
         uci add_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.220.220/32'
         uci commit shadowsocksr
@@ -172,8 +177,8 @@ oversea () {
     fi
     
     if [ `uci get shadowsocksr.@global[0].run_mode` = router ];then
-        uci delete shadowsocksr.@access_control[0].wan_fw_ips
-        sed -i s'/ip111.cn/www.google.com/g' /usr/bin/ssr-switch
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.222.222/32'
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.220.220/32'
         uci add_list shadowsocksr.@access_control[0].wan_fw_ips='149.154.160.0/20' 
         uci add_list shadowsocksr.@access_control[0].wan_fw_ips='67.198.55.0/24' 
         uci add_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.4.0/22' 
@@ -181,6 +186,7 @@ oversea () {
         uci add_list shadowsocksr.@access_control[0].wan_fw_ips='109.239.140.0/24' 
         uci add_list shadowsocksr.@access_control[0].wan_fw_ips='198.13.38.188/32'
         uci commit shadowsocksr
+        sed -i s'/ip111.cn/www.google.com/g' /usr/bin/ssr-switch
         sleep 2
         /etc/init.d/shadowsocksr restart
     fi
