@@ -140,7 +140,8 @@ oversea () {
         uci delete shadowsocksr.@access_control[0].wan_fw_ips
         uci commit shadowsocksr
         sed -i s'/www.google.com/ip111.cn/g' /usr/bin/ssr-switch
-        /usr/bin/wget-ssl -O /etc/config/oversea_list.ip https://github.com/lihaixin/openwrt-docker-builder/raw/master/oversea_list.ip > /dev/null 2>&1
+        custom_oversea_url=$(cat /etc/rc.local | grep  -v ^# | grep custom_oversea_url | cut -c20-)
+        /usr/bin/wget-ssl -O /etc/config/oversea_list.ip $custom_oversea_url > /dev/null 2>&1
         if [ -f "/etc/config/oversea_list.ip" ];then
             cat /etc/config/oversea_list.ip | grep  ^- | sort | uniq | sed s'/.$/\/8.8.8.8#53/' |sed s'/^-/server=\//' > /etc/dnsmasq.oversea/oversea_list.conf
             cat /etc/config/oversea_list.ip | grep -v ^# | grep -v ^- | sort | uniq | sed s'/.$/\/127.0.0.1#5335/' |sed s'/^/server=\//' >> /etc/dnsmasq.oversea/oversea_list.conf
