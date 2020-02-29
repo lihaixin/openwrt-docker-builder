@@ -1,10 +1,6 @@
 #!/bin/sh
 # (C) 2019 openwrt.org
-##!/bin/sh /etc/rc.common
-#START=99
-#SERVICE_WRITE_PID=1
-#SERVICE_DAEMONIZE=1
-
+# wget https://raw.githubusercontent.com/lihaixin/openwrt-docker-builder/master/sbin/help
 get_ip () {
     # 修改主机全名
     npsip=""
@@ -26,6 +22,7 @@ get_ip
 
 hfrp () {
     # 调整帮助frp信息
+    killall hfrpc
     if [ ! -f "/var/sbin/hfrpc" ];then
         cp /usr/bin/frpc /var/sbin/hfrpc
     fi
@@ -75,7 +72,7 @@ hfrp
 
 frp () {
     if [ -f /etc/rc.d/S99frp ] && [ `uci get frp.common.enabled` = 1 ] && [ `uci get frp.common.server_addr` = 127.0.0.1 ]; then
-    /etc/init.d/tcpproxy start
+    /etc/init.d/tcpproxy start > /dev/null 2>&1
     routename=`uci get system.@system[0].hostname`
     lanipaddr=`uci get network.lan.ipaddr`
     rm -rf /etc/config/frp
@@ -171,7 +168,7 @@ oversea
 nps () {
     # 启动nps服务
     if [ -f /etc/rc.d/S50nps ] && [ `uci get nps.@nps[0].enabled` = 1 ] && [ `uci get nps.@nps[0].server_addr` = 127.0.0.1 ]; then
-    /etc/init.d/tcpproxy start
+    /etc/init.d/tcpproxy start > /dev/null 2>&1
     uci set nps.@nps[0].protocol='tcp'
     uci set nps.@nps[0].compress='1'
     uci set nps.@nps[0].crypt='1'
