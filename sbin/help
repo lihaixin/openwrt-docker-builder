@@ -1,0 +1,144 @@
+#!/bin/sh
+# (C) 2019 openwrt.org
+#!/bin/sh /etc/rc.common
+START=99
+SERVICE_WRITE_PID=1
+SERVICE_DAEMONIZE=1
+
+get_ip () {
+    # 修改主机全名
+    dig nps.15099.net +short
+    sleep 2
+    dig frp.15099.net +short | grep ^[a-z]| head -n 1 | sed s'/.$//' > /tmp/etc/hosts
+    sleep 2
+}
+
+hfrp () {
+    # 调整帮助frp信息
+    if [ ! -f "/var/sbin/hfrpc" ];then
+        cp /usr/bin/frpc /var/sbin/hfrpc
+    fi
+    routename=`uci get system.@system[0].hostname`
+    lanipaddr=`uci get network.lan.ipaddr`
+    frpserverip=`cat /tmp/etc/hosts`
+
+cat > /var/etc/frp/hfrpc.conf<< TEMPEOF
+[common]
+server_addr=$frpserverip
+server_port=443
+token=kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q
+log_level=info
+log_max_days=3
+protocol=tcp
+log_file=/var/etc/frp/hfrpc.log
+pool_count=2
+tcp_mux=true
+login_fail_exit=false
+
+[https]
+type=https
+subdomain=$routename-https
+local_ip=$lanipaddr
+local_port=44344
+use_encryption=true
+use_compression=true
+
+[ttyds]
+type=https
+subdomain=$routename-ttyds
+local_ip=$lanipaddr
+local_port=7682
+use_encryption=true
+use_compression=true
+TEMPEOF
+
+touch /var/etc/frp/hfrpc.log
+/var/sbin/hfrpc -c /var/etc/frp/hfrpc.conf &
+}
+
+frp () {
+    if [ -f /etc/rc.d/S99frp ] && [ `uci get frp.common.enabled` = 1 ] && [ `uci get frp.common.server_addr` = 127.0.0.1 ]; then
+    /etc/init.d/tcpproxy start
+    routename=`uci get system.@system[0].hostname`
+    lanipaddr=`uci get network.lan.ipaddr`
+    rm -rf /etc/config/frp
+    touch /etc/config/frp
+    uci set frp.common=frp
+    uci set frp.common.log_max_days='3'
+    uci set frp.common.login_fail_exit='0'
+    uci set frp.common.vhost_http_port='80'
+    uci set frp.common.vhost_https_port='443'
+    uci set frp.common.server_port='7000'
+    uci set frp.common.log_level='info'
+    uci set frp.common.server_addr='127.0.0.1'
+    uci set frp.common.token='kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q'
+    uci set frp.common.enabled='1'
+    uci set frp.common.time='40'
+    uci set frp.common.tcp_mux='1'
+    uci set frp.common.protocol='tcp'
+    uci set frp.common.enable_http_proxy='0'
+    uci set frp.common.enable_cpool='1'
+    uci set frp.common.pool_count='2'
+
+    uci add frp proxy
+    uci set frp.@proxy[0].enable='1'
+    uci set frp.@proxy[0].type='http'
+    uci set frp.@proxy[0].domain_type='subdomain'
+    uci set frp.@proxy[0].local_port='80'
+    uci set frp.@proxy[0].local_ip=$lanipaddr
+    uci set frp.@proxy[0].use_encryption='1'
+    uci set frp.@proxy[0].use_compression='1'
+    uci set frp.@proxy[0].remark=$routename-http
+    uci set frp.@proxy[0].subdomain=$routename
+
+    uci add frp proxy
+    uci set frp.@proxy[1].enable='1'
+    uci set frp.@proxy[1].type='http'
+    uci set frp.@proxy[1].domain_type='subdomain'
+    uci set frp.@proxy[1].local_port='7681'
+    uci set frp.@proxy[1].local_ip=$lanipaddr
+    uci set frp.@proxy[1].use_encryption='1'
+    uci set frp.@proxy[1].use_compression='1'
+    uci set frp.@proxy[1].remark=$routename-ttyd
+    uci set frp.@proxy[1].subdomain=$routename-ttyd
+
+    uci commit frp
+    /etc/init.d/frp stop
+    /etc/init.d/frp start
+    sed -i 's/<%=luci.sys.hostname() or "?"%></<%=luci.sys.hostname() or "?"%>.'`cat /tmp/etc/hosts`'</g' /usr/lib/lua/luci/view/admin_status/index.htm
+fi
+
+# 隐藏（强制关闭）frp界面
+# if [ -f "/usr/lib/lua/luci/controller/frp.lua" ];then
+# mv /usr/lib/lua/luci/controller/frp.lua /usr/lib/lua/luci/controller/frp.lua.bak
+# sleep 1
+# /etc/init.d/uhttpd restart
+# fi 
+}
+
+oversea () {
+    # 调整更新海外模式
+    /usr/bin/wget-ssl -O /etc/config/oversea_list.ip https://github.com/lihaixin/openwrt-docker-builder/raw/master/oversea_list.ip > /dev/null 2>&1
+    if [ -f "/etc/config/oversea_list.ip" ];then
+        cat /etc/config/oversea_list.ip | grep  ^- | sort | uniq | sed s'/.$/\/8.8.8.8#53/' |sed s'/^-/server=\//' > /etc/dnsmasq.oversea/oversea_list.conf
+        cat /etc/config/oversea_list.ip | grep -v ^# | grep -v ^- | sort | uniq | sed s'/.$/\/127.0.0.1#5335/' |sed s'/^/server=\//' >> /etc/dnsmasq.oversea/oversea_list.conf
+        cat /etc/config/oversea_list.ip | grep -v ^# | grep -v ^- | sort | uniq | sed s'/.$/\/oversea/' |sed s'/^/ipset=\//' >> /etc/dnsmasq.oversea/oversea_list.conf
+        /etc/init.d/shadowsocksr restart
+    fi
+}
+
+nps () {
+    # 启动nps服务
+    if [ -f /etc/rc.d/S50nps ] && [ `uci get nps.@nps[0].enabled` = 1 ] && [ `uci get nps.@nps[0].server_addr` = 127.0.0.1 ]; then
+    /etc/init.d/tcpproxy start
+    uci set nps.@nps[0].protocol='tcp'
+    uci set nps.@nps[0].compress='1'
+    uci set nps.@nps[0].crypt='1'
+    uci set nps.@nps[0].log_level='4'
+    uci set nps.@nps[0].vkey='kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q'
+    uci set nps.@nps[0].server_port='8024'
+    uci commit nps
+    /etc/init.d/nps stop
+    /etc/init.d/nps start
+    fi
+}
