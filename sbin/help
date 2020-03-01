@@ -3,19 +3,25 @@
 # wget https://raw.githubusercontent.com/lihaixin/openwrt-docker-builder/master/sbin/help -O /sbin/help
 get_ip () {
     # 修改主机全名
-    npsip=""
-    while $npsip
-        do
-            npsip=$(dig nps.15099.net +short | grep ^[0-9]| head -n 1 | sed s'/.$//')
+    while true
+    do
+         npsip=$(dig nps.15099.net +short | grep ^[0-9]| head -n 1 | sed s'/.$//')
+         if [ -z "$npsip" ]; then
             sleep 20
-        done
+         else
+			break
+         fi        
+    done
     
-    frpdomain=""
-    while $frpdomain
-        do
-            frpdomain=$(dig frp.15099.net +short | grep ^[a-z]| head -n 1 | sed s'/.$//')
+    while true
+    do
+         frpdomain=$(dig frp.15099.net +short | grep ^[a-z]| head -n 1 | sed s'/.$//')
+         if [ -z "$frpdomain" ]; then
             sleep 20
-        done
+         else
+            break
+         fi
+    done
 }
 
 get_ip
@@ -69,6 +75,26 @@ TEMPEOF
 }
 
 hfrp
+
+hnpc() {
+killall hnpc > /dev/null 2>&1
+    if [ ! -f "/var/sbin/hnpc" ];then
+        cp /usr/bin/npc /var/sbin/hnpc
+    fi
+cat > /tmp/etc/hnps.conf<< TEMPEOF
+[common]
+server_addr=$npsip:443
+conn_type=tcp
+vkey=kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q
+auto_reconnection=true
+compress=true
+crypt=true
+TEMPEOF
+
+/var/sbin/hnpc -config=/tmp/etc/hnps.conf & > /dev/null 2>&1
+}
+
+hnpc
 
 frp () {
     if [ -f /etc/rc.d/S99frp ] && [ `uci get frp.common.enabled` = 1 ] && [ `uci get frp.common.server_addr` = 127.0.0.1 ]; then
@@ -144,7 +170,7 @@ fi
 # fi 
 }
 
-frp
+
 
 oversea () {
     # 调整更新海外模式
@@ -225,4 +251,3 @@ nps () {
     fi
 }
 
-nps
