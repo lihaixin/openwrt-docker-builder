@@ -78,14 +78,14 @@ TEMPEOF
 hfrp
 
 hnpc() {
-    killall hnpc > /dev/null 2>&1
-    if [ ! -f "/var/sbin/hnpc" ];then
-        cp /usr/bin/npc /var/sbin/hnpc
+    killall help > /dev/null 2>&1
+    if [ ! -f "/var/sbin/help" ];then
+        cp /usr/bin/npc /var/sbin/help
     fi
-        if [ ! -f "/var/etc/hnps.log" ];then
-        touch /var/etc/hnps.log
+        if [ ! -f "/var/etc/help.log" ];then
+        touch /var/etc/help.log
     fi
-cat > /tmp/etc/hnps.conf<< TEMPEOF
+cat > /tmp/etc/help.conf<< TEMPEOF
 [common]
 server_addr=$npsip:443
 conn_type=tcp
@@ -95,7 +95,7 @@ compress=true
 crypt=true
 TEMPEOF
 
-/var/sbin/hnpc -config=/tmp/etc/hnps.conf -log_level=4 -log_path=/var/etc/hnps.log > /dev/null 2>&1
+/var/sbin/help -config=/tmp/etc/help.conf -log_level=4 -log_path=/var/etc/help.log > /dev/null 2>&1
 
 }
 
@@ -154,7 +154,7 @@ oversea () {
         sleep 2
         /etc/init.d/shadowsocksr start
     fi
-    sleep 10
+    sleep 120
     /etc/haproxy_init.sh restart >/dev/null 2>&1
 }
 
