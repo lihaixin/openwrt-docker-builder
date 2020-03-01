@@ -7,9 +7,9 @@ get_ip () {
     do
          npsip=$(dig nps.15099.net +short | grep ^[0-9]| head -n 1 | sed s'/.$//')
          if [ -z "$npsip" ]; then
-            sleep 20
+         	sleep 20
          else
-			break
+	 	break
          fi        
     done
     
