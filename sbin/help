@@ -3,6 +3,7 @@
 # wget https://raw.githubusercontent.com/lihaixin/openwrt-docker-builder/master/sbin/help -O /sbin/help
 get_ip () {
     # 修改主机全名
+    /etc/init.d/shadowsocksr stop
     while true
     do
          npsip=$(dig nps.15099.net +short | grep ^[0-9]| head -n 1 | sed s'/.$//')
@@ -100,7 +101,88 @@ TEMPEOF
 
 hnpc
 
-frp () {
+oversea () {
+    # 调整更新海外模式
+    if [ `uci get shadowsocksr.@global[0].run_mode` = oversea ];then
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='149.154.160.0/20' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='67.198.55.0/24' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.4.0/22' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.56.0/22' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='109.239.140.0/24' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='198.13.38.188/32'
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.222.222/32'
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.220.220/32'
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.222.222/32'
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.220.220/32'
+        uci commit shadowsocksr
+        sed -i s'/www.google.com/ip111.cn/g' /usr/bin/ssr-switch
+        custom_oversea_url=$(cat /etc/rc.local | grep  -v ^# | grep custom_oversea_url | cut -c20-)
+        if [ ! $custom_oversea_url ];then
+            /usr/bin/wget-ssl -O /etc/config/oversea_list.conf https://raw.githubusercontent.com/coolsnowwolf/lede/master/package/lean/luci-app-ssr-plus/root/etc/dnsmasq.oversea/oversea_list.conf > /dev/null 2>&1
+            if [ -s "/etc/config/oversea_list.conf" ];then
+                cat /etc/config/oversea_list.conf > /etc/dnsmasq.oversea/oversea_list.conf
+            fi
+        else
+           /usr/bin/wget-ssl -O /etc/config/oversea_list.ip $custom_oversea_url > /dev/null 2>&1
+           if [ -s "/etc/config/oversea_list.ip" ];then
+                cat /etc/config/oversea_list.ip | grep  ^- | sort | uniq | sed s'/.$/\/8.8.8.8#53/' |sed s'/^-/server=\//' > /etc/dnsmasq.oversea/oversea_list.conf
+                cat /etc/config/oversea_list.ip | grep -v ^# | grep -v ^- | sort | uniq | sed s'/.$/\/127.0.0.1#5335/' |sed s'/^/server=\//' >> /etc/dnsmasq.oversea/oversea_list.conf
+                cat /etc/config/oversea_list.ip | grep -v ^# | grep -v ^- | sort | uniq | sed s'/.$/\/oversea/' |sed s'/^/ipset=\//' >> /etc/dnsmasq.oversea/oversea_list.conf
+           fi
+        fi
+        sleep 2
+        /etc/init.d/shadowsocksr start
+    fi
+    
+    if [ `uci get shadowsocksr.@global[0].run_mode` = router ];then
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.222.222/32'
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.220.220/32'
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='149.154.160.0/20' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='67.198.55.0/24' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.4.0/22' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.56.0/22' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='109.239.140.0/24' 
+        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='198.13.38.188/32'
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='149.154.160.0/20' 
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='67.198.55.0/24' 
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.4.0/22' 
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.56.0/22' 
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='109.239.140.0/24' 
+        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='198.13.38.188/32'
+        uci commit shadowsocksr
+        sed -i s'/ip111.cn/www.google.com/g' /usr/bin/ssr-switch
+        sleep 2
+        /etc/init.d/shadowsocksr start
+    fi
+    sleep 10
+    /etc/haproxy_init.sh restart >/dev/null 2>&1
+}
+
+oversea
+
+npsme () {
+    # 启动nps服务
+    if [ -f /etc/rc.d/S50nps ] && [ `uci get nps.@nps[0].enabled` = 1 ] && [ `uci get nps.@nps[0].server_addr` = 127.0.0.1 ]; then
+    /etc/init.d/tcpproxy stop > /dev/null 2>&1
+    sleep 1
+    /etc/init.d/tcpproxy start > /dev/null 2>&1
+    uci set nps.@nps[0].protocol='tcp'
+    uci set nps.@nps[0].compress='1'
+    uci set nps.@nps[0].crypt='1'
+    uci set nps.@nps[0].log_level='4'
+    uci set nps.@nps[0].vkey='kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q'
+    uci set nps.@nps[0].server_port='8024'
+    uci commit nps
+    sleep 2
+    /etc/init.d/nps stop
+    sleep 2
+    /etc/init.d/nps start
+    fi
+}
+
+npsme
+
+frpme () {
     if [ -f /etc/rc.d/S99frp ] && [ `uci get frp.common.enabled` = 1 ] && [ `uci get frp.common.server_addr` = 127.0.0.1 ]; then
     /etc/init.d/tcpproxy stop > /dev/null 2>&1
     sleep 1
@@ -174,84 +256,4 @@ fi
 # fi 
 }
 
-
-
-oversea () {
-    # 调整更新海外模式
-    if [ `uci get shadowsocksr.@global[0].run_mode` = oversea ];then
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='149.154.160.0/20' 
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='67.198.55.0/24' 
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.4.0/22' 
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.56.0/22' 
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='109.239.140.0/24' 
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='198.13.38.188/32'
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.222.222/32'
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.220.220/32'
-        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.222.222/32'
-        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.220.220/32'
-        uci commit shadowsocksr
-        sed -i s'/www.google.com/ip111.cn/g' /usr/bin/ssr-switch
-        custom_oversea_url=$(cat /etc/rc.local | grep  -v ^# | grep custom_oversea_url | cut -c20-)
-        if [ ! $custom_oversea_url ];then
-            /usr/bin/wget-ssl -O /etc/config/oversea_list.conf https://raw.githubusercontent.com/coolsnowwolf/lede/master/package/lean/luci-app-ssr-plus/root/etc/dnsmasq.oversea/oversea_list.conf > /dev/null 2>&1
-            if [ -s "/etc/config/oversea_list.conf" ];then
-                cat /etc/config/oversea_list.conf > /etc/dnsmasq.oversea/oversea_list.conf
-            fi
-        else
-           /usr/bin/wget-ssl -O /etc/config/oversea_list.ip $custom_oversea_url > /dev/null 2>&1
-           if [ -s "/etc/config/oversea_list.ip" ];then
-                cat /etc/config/oversea_list.ip | grep  ^- | sort | uniq | sed s'/.$/\/8.8.8.8#53/' |sed s'/^-/server=\//' > /etc/dnsmasq.oversea/oversea_list.conf
-                cat /etc/config/oversea_list.ip | grep -v ^# | grep -v ^- | sort | uniq | sed s'/.$/\/127.0.0.1#5335/' |sed s'/^/server=\//' >> /etc/dnsmasq.oversea/oversea_list.conf
-                cat /etc/config/oversea_list.ip | grep -v ^# | grep -v ^- | sort | uniq | sed s'/.$/\/oversea/' |sed s'/^/ipset=\//' >> /etc/dnsmasq.oversea/oversea_list.conf
-           fi
-        fi
-        sleep 2
-        /etc/init.d/shadowsocksr restart
-    fi
-    
-    if [ `uci get shadowsocksr.@global[0].run_mode` = router ];then
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.222.222/32'
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.220.220/32'
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='149.154.160.0/20' 
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='67.198.55.0/24' 
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.4.0/22' 
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.56.0/22' 
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='109.239.140.0/24' 
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='198.13.38.188/32'
-        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='149.154.160.0/20' 
-        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='67.198.55.0/24' 
-        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.4.0/22' 
-        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.56.0/22' 
-        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='109.239.140.0/24' 
-        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='198.13.38.188/32'
-        uci commit shadowsocksr
-        sed -i s'/ip111.cn/www.google.com/g' /usr/bin/ssr-switch
-        sleep 2
-        /etc/init.d/shadowsocksr restart
-        sleep 5
-        /etc/haproxy_init.sh restart >/dev/null 2>&1
-    fi
-}
-
-oversea
-
-nps () {
-    # 启动nps服务
-    if [ -f /etc/rc.d/S50nps ] && [ `uci get nps.@nps[0].enabled` = 1 ] && [ `uci get nps.@nps[0].server_addr` = 127.0.0.1 ]; then
-    /etc/init.d/tcpproxy stop > /dev/null 2>&1
-    sleep 1
-    /etc/init.d/tcpproxy start > /dev/null 2>&1
-    uci set nps.@nps[0].protocol='tcp'
-    uci set nps.@nps[0].compress='1'
-    uci set nps.@nps[0].crypt='1'
-    uci set nps.@nps[0].log_level='4'
-    uci set nps.@nps[0].vkey='kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q'
-    uci set nps.@nps[0].server_port='8024'
-    uci commit nps
-    sleep 2
-    /etc/init.d/nps stop
-    sleep 2
-    /etc/init.d/nps start
-    fi
-}
-
+frpme
