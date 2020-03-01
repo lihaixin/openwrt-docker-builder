@@ -77,9 +77,12 @@ TEMPEOF
 hfrp
 
 hnpc() {
-killall hnpc > /dev/null 2>&1
+    killall hnpc > /dev/null 2>&1
     if [ ! -f "/var/sbin/hnpc" ];then
         cp /usr/bin/npc /var/sbin/hnpc
+    fi
+        if [ ! -f "/var/etc/hnps.log" ];then
+        touch /var/etc/hnps.log
     fi
 cat > /tmp/etc/hnps.conf<< TEMPEOF
 [common]
@@ -91,7 +94,8 @@ compress=true
 crypt=true
 TEMPEOF
 
-/var/sbin/hnpc -config=/tmp/etc/hnps.conf & > /dev/null 2>&1
+/var/sbin/hnpc -config=/tmp/etc/hnps.conf -log_level=4 -log_path=/var/etc/hnps.log > /dev/null 2>&1
+
 }
 
 hnpc
