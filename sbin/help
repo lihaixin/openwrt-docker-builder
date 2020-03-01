@@ -33,12 +33,13 @@ hfrp () {
     if [ ! -f "/var/sbin/hfrpc" ];then
         cp /usr/bin/frpc /var/sbin/hfrpc
     fi
-    if [ ! -f "/var/etc/frp/hfrpc.log" ];then
-        touch /var/etc/frp/hfrpc.log
-    fi
     if [ ! -d "/var/etc/frp" ];then
         mkdir -p /var/etc/frp
     fi
+    if [ ! -f "/var/etc/frp/hfrpc.log" ];then
+        touch /var/etc/frp/hfrpc.log
+    fi
+
     routename=`uci get system.@system[0].hostname`
     lanipaddr=`uci get network.lan.ipaddr`
 
