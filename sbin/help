@@ -25,7 +25,7 @@ get_ip () {
     done
 }
 
-get_ip
+
 
 hfrp () {
     # 调整帮助frp信息
@@ -160,6 +160,7 @@ oversea () {
 }
 
 oversea
+get_ip
 hfrp
 hnpc
 
