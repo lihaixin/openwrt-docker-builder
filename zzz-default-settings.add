@@ -58,6 +58,9 @@ uci set dhcp.lan.start='11'
 uci set dhcp.lan.limit='99'
 uci set dhcp.lan.force='1'
 uci commit dhcp
+# 关闭ipv6局域网分发
+/etc/init.d/odhcpd stop
+/etc/init.d/odhcpd disable
 
 # 50 关闭 tinyproxy 自定义
 uci set tinyproxy.@tinyproxy[0].Allow='127.0.0.1'
