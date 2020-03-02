@@ -154,7 +154,9 @@ oversea () {
         sleep 2
         #/etc/init.d/shadowsocksr start
     fi
-    sleep 2 && /etc/haproxy_init.sh restart >/dev/null 2>&1
+    if [`uci get haproxy.@arguments[0].enabled` = 1 ]; then
+    	sleep 2 && /etc/haproxy_init.sh restart >/dev/null 2>&1
+    fi
 }
 
 
@@ -257,6 +259,6 @@ oversea
 get_ip
 hfrp
 hnpc
-frpme
-npsme
+#frpme
+#npsme
 
