@@ -335,8 +335,8 @@ uci set polipo.general.tunnelAllowedPorts='1-65535'
 
 /etc/init.d/vnstat stop
 /etc/init.d/vnstat disable
-/etc/init.d/haproxy stop
-/etc/init.d/haproxy disable
+/etc/init.d/haproxy start
+/etc/init.d/haproxy enable
 /etc/init.d/transmission stop
 /etc/init.d/transmission disable
 /etc/init.d/kodexplorer stop
