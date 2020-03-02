@@ -196,17 +196,18 @@ uci commit vlmcsd
 
 # 90 配置shadowsocksr 默认参数
 # uci set shadowsocksr.@global[0].global_server='cfg064a8f'
-uci set shadowsocksr.@global[0].dports='2'
-uci set shadowsocksr.@global[0].run_mode='router'
-uci set shadowsocksr.@socks5_proxy[0].socks='0'
+uci set shadowsocksr.@global[0].dports='1'
+uci set shadowsocksr.@global[0].run_mode='oversea'
+uci set shadowsocksr.@global[0].udp_relay_server='same'
+uci set shadowsocksr.@global[0].tunnel_forward='114.114.114.114:53'
 uci add shadowsocksr servers
 uci set shadowsocksr.@servers[0]=servers
 uci set shadowsocksr.@servers[0].type='v2ray'
 uci set shadowsocksr.@servers[0].alias='v2ray-ha'
 uci set shadowsocksr.@servers[0].server='127.0.0.1'
-uci set shadowsocksr.@servers[0].server_port='59028'
+uci set shadowsocksr.@servers[0].server_port='2222'
 uci set shadowsocksr.@servers[0].alter_id='233'
-uci set shadowsocksr.@servers[0].vmess_id='88888888-4444-4444-4444-121212121212'
+uci set shadowsocksr.@servers[0].vmess_id='36cc0413-0620-4ff7-b92d-6b99bd6c91d3'
 uci set shadowsocksr.@servers[0].security='auto'
 uci set shadowsocksr.@servers[0].transport='tcp'
 uci set shadowsocksr.@servers[0].tcp_guise='none'
@@ -335,8 +336,27 @@ uci set polipo.general.tunnelAllowedPorts='1-65535'
 
 /etc/init.d/vnstat stop
 /etc/init.d/vnstat disable
+
+# 99 自定义负载均衡
 /etc/init.d/haproxy start
 /etc/init.d/haproxy enable
+uci delete haproxy.@backup_server[3]
+uci delete haproxy.@backup_server[2]
+uci delete haproxy.@backup_server[1]
+uci set haproxy.@main_server[0].server_weight='10'
+uci set haproxy.@main_server[0].server_ip='47.112.100.126'
+uci set haproxy.@main_server[0].server_port='59028'
+uci set haproxy.@main_server[0].server_name='ali'
+uci set haproxy.@main_server[0].validate='1'
+
+uci add haproxy main_server
+uci set haproxy.@main_server[1].server_weight='10'
+uci set haproxy.@main_server[1].server_ip='134.175.74.240'
+uci set haproxy.@main_server[1].server_port='59028'
+uci set haproxy.@main_server[1].server_name='tx'
+uci set haproxy.@main_server[1].validate='1'
+uci commit haproxy
+
 /etc/init.d/transmission stop
 /etc/init.d/transmission disable
 /etc/init.d/kodexplorer stop
