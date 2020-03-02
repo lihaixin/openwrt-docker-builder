@@ -343,6 +343,8 @@ uci set polipo.general.tunnelAllowedPorts='1-65535'
 uci delete haproxy.@backup_server[3]
 uci delete haproxy.@backup_server[2]
 uci delete haproxy.@backup_server[1]
+uci set haproxy.@arguments[0]=arguments
+uci set haproxy.@arguments[0].enabled='1'
 uci set haproxy.@main_server[0].server_weight='10'
 uci set haproxy.@main_server[0].server_ip='47.112.100.126'
 uci set haproxy.@main_server[0].server_port='59028'
