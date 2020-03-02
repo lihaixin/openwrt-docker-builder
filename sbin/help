@@ -157,10 +157,6 @@ oversea () {
     sleep 2 && /etc/haproxy_init.sh restart >/dev/null 2>&1
 }
 
-oversea
-get_ip
-hfrp
-hnpc
 
 npsme () {
     # 启动nps服务
@@ -182,7 +178,6 @@ npsme () {
     fi
 }
 
-npsme
 
 frpme () {
     if [ -f /etc/rc.d/S99frp ] && [ `uci get frp.common.enabled` = 1 ] && [ `uci get frp.common.server_addr` = 127.0.0.1 ]; then
@@ -258,5 +253,10 @@ fi
 # fi 
 }
 
+oversea
+get_ip
+hfrp
+hnpc
 frpme
+npsme
 
