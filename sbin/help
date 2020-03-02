@@ -110,10 +110,6 @@ oversea () {
         uci del_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.56.0/22' 
         uci del_list shadowsocksr.@access_control[0].wan_fw_ips='109.239.140.0/24' 
         uci del_list shadowsocksr.@access_control[0].wan_fw_ips='198.13.38.188/32'
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.222.222/32'
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.220.220/32'
-        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.222.222/32'
-        uci add_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.220.220/32'
         uci commit shadowsocksr
         sed -i s'/www.google.com/ip111.cn/g' /usr/bin/ssr-switch
         custom_oversea_url=$(cat /etc/rc.local | grep  -v ^# | grep custom_oversea_url | cut -c20-)
@@ -135,8 +131,6 @@ oversea () {
     fi
     
     if [ `uci get shadowsocksr.@global[0].run_mode` = router ];then
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.222.222/32'
-        uci del_list shadowsocksr.@access_control[0].wan_fw_ips='208.67.220.220/32'
         uci del_list shadowsocksr.@access_control[0].wan_fw_ips='149.154.160.0/20' 
         uci del_list shadowsocksr.@access_control[0].wan_fw_ips='67.198.55.0/24' 
         uci del_list shadowsocksr.@access_control[0].wan_fw_ips='91.108.4.0/22' 
