@@ -1,6 +1,4 @@
-
 ### 4.3.1 配置路由器主机名和样式
-
 # 根据网卡信息生成主机名
 # routename=`cat /proc/sys/kernel/random/uuid | cut -c1-8`
 # routename=$(ifconfig eth0|grep eth0|awk '{print $5}' | cut -c10-17 | sed 's/://g')
