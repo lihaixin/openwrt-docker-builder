@@ -3,7 +3,6 @@
 # wget https://raw.githubusercontent.com/lihaixin/openwrt-docker-builder/master/sbin/help -O /sbin/help
 get_ip () {
     # 修改主机全名
-    /etc/init.d/shadowsocksr stop
     while true
     do
          npsip=$(dig nps.15099.net +short | grep ^[0-9]| head -n 1 | sed s'/.$//')
