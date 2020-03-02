@@ -1,0 +1,12 @@
+#!/bin/sh
+# (C) 2019 openwrt.org
+# nano package/base-files/files/sbin/myifnameip
+# uci set network.wan.ifname='eth1'
+# uci set network.wan6.ifname='eth1'
+# uci set network.lan.ifname='eth0'
+# uci set network.wan.proto='static'
+# uci set network.wan.ipaddr=$newlanip
+# uci set network.wan.gateway=$langateway
+# uci set network.wan.dns='114.114.114.114'
+# uci commit network
+# /etc/init.d/network restart
