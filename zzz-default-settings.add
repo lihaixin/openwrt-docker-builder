@@ -52,7 +52,7 @@ sysctl kernel.random.entropy_avail
 
 # 35 配置路由器默认DNS缓存从默认150调整到1024,使用dnscache缓存
 # uci set dhcp.@dnsmasq[0].allservers='1' <--现在使用pdnd作为上流dns，所以不开启
-uci set dhcp.@dnsmasq[0].cachesize='2048'
+uci set dhcp.@dnsmasq[0].cachesize='0'
 uci set dhcp.@dnsmasq[0].mini_ttl='86400'
 uci set dhcp.lan.start='11'
 uci set dhcp.lan.limit='99'
