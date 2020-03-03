@@ -1,0 +1,116 @@
+#!/bin/sh
+# (C) 2019 openwrt.org
+# nano package/base-files/files/sbin/firstconfig
+# 安装speedtest
+if [ -f /etc/speedtest_cli-2.1.2-py2.py3-none-any.whl ]; then
+    pip3 install  /etc/speedtest_cli-2.1.2-py2.py3-none-any.whl
+    rm -rf /etc/speedtest_cli-2.1.2-py2.py3-none-any.whl
+    mv /etc/udpping.py /sbin/udpping.py
+    chmod +x /sbin/udpping.py
+fi
+
+# 配置路由器名称和样式
+# uci set system.@system[0].hostname=SANJIN
+# uci commit system
+# uci set luci.main.mediaurlbase='/luci-static/rosy'
+# uci set luci.main.mediaurlbase='/luci-static/netgear'
+# uci set luci.main.mediaurlbase='/luci-static/material'
+# uci set luci.main.mediaurlbase='/luci-static/argon'
+# uci set luci.themes.Argon='/luci-static/argon'
+# uci commit luci
+
+# 判断网卡数，确定是否有多个网卡
+if [ `grep -c "eth" /proc/net/dev` -eq '1' ]; then
+    ## 以下为旁路由专用
+    # 删除原来的静态分配
+    echo "尝试使用DHCP分配获得路由器IP"
+    uci set network.lan.proto='dhcp'
+    uci commit network
+    /etc/init.d/network restart 
+    echo "" >>/etc/crontabs/root
+    #echo "*/1 * * * * killall ntpd && /usr/sbin/ntpd -n -N -S /usr/sbin/ntpd-hotplug -p ntp1.aliyun.com -p time1.cloud.tencent.com -p time.ustc.edu.cn -p pool.ntp.org" >> /etc/crontabs/root
+    echo '# */1 * * * * kill -SIGHUP $(pidof ntpd)' >> /etc/crontabs/root
+    crontab /etc/crontabs/root
+    # 等待5秒让dhcp分配IP
+    echo "现在试图获取路由器相关IP信息！"
+    sleep 5
+    wanip="`curl http://members.3322.org/dyndns/getip`"
+    lanip="`ubus call network.interface.lan status | grep \"address\" | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}';`"
+    echo "路由器外网IP：$wanip "
+    echo "动态分配的IP：$lanip "
+    ## 如果局域网或者外网没用DHCP提供服务器，静态分配
+    if [[ "$lanip" = "" ]]; then
+        echo "网络没用DHCP服务，静态分配ip：192.168.2.201"
+        uci set network.lan.proto='static'
+        uci commit network
+        /etc/init.d/network restart
+    else
+
+       # 如果局域网或者外网有动态分配IP
+       if [[ "$wanip" = "$lanip" ]]; then
+           echo "用在云服务器上，只有一个网口情况，动态获取IP信息"
+       else
+           echo "用在局域网旁路由，自动获取局域网网段，然后静态分配IP最后一位为105数字"
+           newlanip="`echo $lanip |awk -F. '{print $1 "." $2 "." $3 "." "201"}'`"
+           langateway="`ip route | grep default | awk -F' ' '{print $3}'`"
+           echo "新路由器IP：$newlanip "
+           echo "新路由器网关：$langateway "
+           uci set network.lan.proto='static'
+           uci set network.lan.ipaddr=$newlanip
+           uci set network.lan.gateway=$langateway
+           uci set network.lan.dns='114.114.114.114'
+           uci commit network
+           /etc/init.d/network restart
+       fi
+    fi
+    ## 如果外网没有DHCP，有静态分配的文件，执行
+    if [ -f /sbin/myifnameip ]; then
+      chmod +x /sbin/myifnameip
+      /sbin/myifnameip
+    fi
+
+   ## 关闭单网卡不需要的服务
+   if [ ! -f /usr/bin/closemyboot ]; then
+      # /etc/init.d/netdata start && /etc/init.d/netdata enable
+      touch /usr/bin/closemyboot
+      sed -i '/^\/sbin\/firstconfig/d' /etc/rc.local
+   fi
+    echo "Your route has only one network interface"
+    echo "The LAN interface IP Address: $newlanip "
+else
+    wandhcpip="`ubus call network.interface.wan status | grep \"address\" | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}';`"
+    ## 如果外网有DHCP提供服务器，但是没分配，换个网卡
+    if [[ "$wandhcpip" = "" ]]; then
+        uci set network.wan.ifname='eth0'
+        uci set network.wan6.ifname='eth0'
+        uci set network.lan.ifname='eth1'
+        uci commit network
+        /etc/init.d/network restart
+    fi
+    sleep 10
+    wandhcpip="`ubus call network.interface.wan status | grep \"address\" | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}';`"
+    ## 外网没用DHCP服务，换回网卡
+    if [[ "$wandhcpip" = "" ]]; then
+        uci set network.wan.ifname='eth1'
+        uci set network.wan6.ifname='eth1'
+        uci set network.lan.ifname='eth0'
+        uci commit network
+        /etc/init.d/network restart
+    fi
+    ## 如果外网没有DHCP，有静态分配的文件，执行
+    if [ -f /sbin/myifnameip ]; then
+      chmod +x /sbin/myifnameip
+      /sbin/myifnameip
+    fi
+    # 以下是主路由配置,不止一张网卡,关闭不需要的服务
+    if [ ! -f /usr/bin/closemyboot ]; then
+      /etc/init.d/vnstat start && /etc/init.d/vnstat enable
+      #/etc/init.d/netdata start && /etc/init.d/netdata enable
+      /etc/init.d/nlbwmon start && /etc/init.d/nlbwmon enable
+      touch /usr/bin/closemyboot
+      sed -i '/^\/sbin\/firstconfig/d' /etc/rc.local
+    fi
+    echo "Your route has Multiple  network interface"
+    echo "The LAN interface Name:`uci get network.lan.ifname`"
+    echo "The LAN interface IP Address:`uci get network.lan.ipaddr`"
+fi
