@@ -5,7 +5,7 @@ get_ip () {
     # 修改主机全名
     while true
     do
-         npsip=$(dig nps.15099.net +short | grep ^[0-9]| head -n 1 | sed s'/.$//')
+         npsip=$(dig nps.15099.net +short | grep ^[0-9]| head -n 1 | sed s'/$//')
          if [ -z "$npsip" ]; then
          	sleep 20
          else
