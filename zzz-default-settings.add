@@ -340,9 +340,9 @@ uci set polipo.general.tunnelAllowedPorts='1-65535'
 # 99 自定义负载均衡
 /etc/init.d/haproxy start
 /etc/init.d/haproxy enable
-uci delete haproxy.@backup_server[3]
 uci delete haproxy.@backup_server[2]
 uci delete haproxy.@backup_server[1]
+uci delete haproxy.@backup_server[0]
 uci set haproxy.@arguments[0]=arguments
 uci set haproxy.@arguments[0].enabled='1'
 uci set haproxy.@main_server[0].server_weight='10'
