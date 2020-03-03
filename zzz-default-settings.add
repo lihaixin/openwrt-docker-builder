@@ -195,7 +195,7 @@ uci commit vlmcsd
 # /etc/init.d/zerotier disable
 
 # 90 配置shadowsocksr 默认参数
-# uci set shadowsocksr.@global[0].global_server='cfg064a8f'
+uci set shadowsocksr.@global[0].global_server='cfg064a8f'
 uci set shadowsocksr.@global[0].dports='1'
 uci set shadowsocksr.@global[0].run_mode='oversea'
 uci set shadowsocksr.@global[0].udp_relay_server='same'
