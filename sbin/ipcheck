@@ -1,0 +1,30 @@
+#!/bin/sh
+# (C) 2019 openwrt.org
+# 清空缓存：
+pdnsd-ctl -c /var/dnscache/ empty-cache
+pdnsd-ctl -c /var/pdnsd empty-cache
+
+for i in $(seq 1 2 100)
+do
+   echo -e "\n"
+   sleep 4
+   echo 测试访问国内出口IP:
+   curl http://members.3322.org/dyndns/getip
+   curl http://ip.3322.net/
+   sleep 1
+   echo -e "\n"
+   echo 测试访问谷歌出口IP：
+   ip111cn=$(curl http://ip111cn.appspot.com/ 2>/dev/null)
+   echo $ip111cn | sed 's/<html><head><meta charset="utf-8"><\/head><body style="text-align: center; font-family: Helvetica,Arial,sans-serif; font-size: 14px; ">//' | sed 's/<\/body><\/html>//'
+   ip100info=$(curl http://ip100info.appspot.com/ip.php 2>/dev/null)
+   echo $ip100info | sed 's/<br>//'
+   sleep 1
+   echo -e "\n"
+   echo 测试访问国外出口IP：
+   curl ifconfig.me
+   echo
+   curl ipinfo.io/ip
+   curl whatismyip.akamai.com
+   echo
+   curl ip.sb
+done
