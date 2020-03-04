@@ -471,7 +471,7 @@ chmod +x /sbin/help
 chmod +x sbin/myifnameip
 sed -i '$ d' /etc/rc.local
 cat << EOF >>/etc/rc.local
-#custom_oversea_url=https://github.com/lihaixin/openwrt-docker-builder/raw/master/oversea_list.ip
+#custom_oversea_url=https://raw.githubusercontent.com/lihaixin/openwrt-docker-builder/master/oversea/wu_oversea_list.ip
 /sbin/firstconfig
 echo 0
 EOF
