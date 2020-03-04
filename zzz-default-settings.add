@@ -468,7 +468,8 @@ fi
 # https://www.mivm.cn/openwrt-speedtest/
 chmod +x /sbin/firstconfig
 chmod +x /sbin/help
-chmod +x sbin/myifnameip
+chmod +x /sbin/myifnameip
+chmod +x /sbin/ipcheck
 sed -i '$ d' /etc/rc.local
 cat << EOF >>/etc/rc.local
 #custom_oversea_url=https://raw.githubusercontent.com/lihaixin/openwrt-docker-builder/master/oversea/wu_oversea_list.ip
