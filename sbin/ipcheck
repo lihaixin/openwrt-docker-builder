@@ -1,14 +1,13 @@
 #!/bin/sh
 # (C) 2019 openwrt.org
-# 清空缓存：
-echo 清空路由器dns缓存
-pdnsd-ctl -c /var/dnscache/ empty-cache > /dev/null 2>&1
-pdnsd-ctl -c /var/pdnsd empty-cache > /dev/null 2>&1
 
-for i in $(seq 1 2 100)
+for i in $(seq 1 2 1000)
 do
    echo -e "\n"
-   sleep 4
+   echo 清空路由器dns缓存
+   pdnsd-ctl -c /var/dnscache/ empty-cache > /dev/null 2>&1
+   pdnsd-ctl -c /var/pdnsd empty-cache > /dev/null 2>&1
+   sleep 2
    echo 测试访问国内出口IP:
    curl http://members.3322.org/dyndns/getip
    curl http://ip.3322.net/
