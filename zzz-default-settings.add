@@ -3,6 +3,8 @@
 # routename=`cat /proc/sys/kernel/random/uuid | cut -c1-8`
 # routename=$(ifconfig eth0|grep eth0|awk '{print $5}' | cut -c10-17 | sed 's/://g')
 routename=$(ip address show dev eth0 | grep link | awk '{print $2}' | cut -c10-17 | sed 's/://g' | tr 'A-Z' 'a-z')
+customname=wu
+routename=$routename$customname
 uci set system.@system[0].hostname=$routename
 uci commit system
 
@@ -472,7 +474,7 @@ chmod +x /sbin/myifnameip
 chmod +x /sbin/ipcheck
 sed -i '$ d' /etc/rc.local
 cat << EOF >>/etc/rc.local
-#custom_oversea_url=https://raw.githubusercontent.com/lihaixin/openwrt-docker-builder/master/oversea/wu_oversea_list.ip
+custom_oversea_url=https://raw.githubusercontent.com/lihaixin/openwrt-docker-builder/master/oversea/wu_oversea_list.ip
 /sbin/firstconfig
 echo 0
 EOF
