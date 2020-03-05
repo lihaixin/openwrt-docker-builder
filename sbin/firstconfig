@@ -58,7 +58,7 @@ if [ `grep -c "eth" /proc/net/dev` -eq '1' ]; then
            uci set network.lan.proto='static'
            uci set network.lan.ipaddr=$newlanip
            uci set network.lan.gateway=$langateway
-           uci set network.lan.dns='114.114.114.114'
+           uci set network.lan.dns='114.114.114.114 8.8.8.8'
            uci commit network
            /etc/init.d/network restart
        fi
