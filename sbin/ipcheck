@@ -13,14 +13,14 @@ do
    curl http://ip.3322.net/
    sleep 1
    echo -e "\n"
-   echo check access google IP：
+   echo check access google IP:
    ip111cn=$(curl http://ip111cn.appspot.com/ 2>/dev/null)
    echo $ip111cn | sed 's/<html><head><meta charset="utf-8"><\/head><body style="text-align: center; font-family: Helvetica,Arial,sans-serif; font-size: 14px; ">//' | sed 's/<\/body><\/html>//'
    ip100info=$(curl http://ip100info.appspot.com/ip.php 2>/dev/null)
    echo $ip100info | sed 's/<br>//'
    sleep 1
    echo -e "\n"
-   echo check access overseas IP：
+   echo check access overseas IP:
    curl ifconfig.me
    echo
    curl ipinfo.io/ip
