@@ -7,24 +7,23 @@ do
    echo clear route dns cache:
    pdnsd-ctl -c /var/dnscache/ empty-cache > /dev/null 2>&1
    pdnsd-ctl -c /var/pdnsd empty-cache > /dev/null 2>&1
-   sleep 2
+   sleep 5
    echo check access china IP:
-   curl http://members.3322.org/dyndns/getip
-   curl http://ip.3322.net/
-   sleep 1
+   echo -e "acccess 3322.org ip is:\c" && curl http://members.3322.org/dyndns/getip
+   sleep 2
    echo -e "\n"
    echo check access google IP:
    ip111cn=$(curl http://ip111cn.appspot.com/ 2>/dev/null)
-   echo $ip111cn | sed 's/<html><head><meta charset="utf-8"><\/head><body style="text-align: center; font-family: Helvetica,Arial,sans-serif; font-size: 14px; ">//' | sed 's/<\/body><\/html>//'
+   echo -e "acccess ip111.cn ip is:\c" && echo $ip111cn | sed 's/<html><head><meta charset="utf-8"><\/head><body style="text-align: center; font-family: Helvetica,Arial,sans-serif; font-size: 14px; ">//' | sed 's/<\/body><\/html>//'
    ip100info=$(curl http://ip100info.appspot.com/ip.php 2>/dev/null)
-   echo $ip100info | sed 's/<br>//'
-   sleep 1
+   echo -e "acccess ip100.info ip is:\c" && echo $ip100info | sed 's/<br>//'
+   sleep 2
    echo -e "\n"
    echo check access overseas IP:
-   curl ifconfig.me
+   echo -e "acccess ifconfig.me ip is:\c" && curl ifconfig.me
    echo
-   curl ipinfo.io/ip
-   curl whatismyip.akamai.com
+   echo -e "acccess ipinfo.io ip is:\c" && curl ipinfo.io/ip
+   echo -e "acccess whatismyip.akamai.com ip is:\c" && curl whatismyip.akamai.com
    echo
-   curl ip.sb
+   echo -e "acccess ip.sb ip is:\c" && curl ip.sb
 done
