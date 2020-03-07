@@ -111,7 +111,8 @@ oversea () {
         uci del_list shadowsocksr.@access_control[0].wan_fw_ips='109.239.140.0/24' 
         uci del_list shadowsocksr.@access_control[0].wan_fw_ips='198.13.38.188/32'
         uci commit shadowsocksr
-        sed -i s'/www.google.com/ip111.cn/g' /usr/bin/ssr-switch
+        sed -i s'/www.google.com/www.qq.com/g' /usr/bin/ssr-switch
+	sed -i s'/www.baidu.com/www.yahoo.com/g' /usr/bin/ssr-switch
         custom_oversea_url=$(cat /etc/rc.local | grep  -v ^# | grep custom_oversea_url | cut -c20-)
         if [ ! $custom_oversea_url ];then
             /usr/bin/wget-ssl -O /etc/config/oversea_list.conf https://raw.githubusercontent.com/coolsnowwolf/lede/master/package/lean/luci-app-ssr-plus/root/etc/dnsmasq.oversea/oversea_list.conf > /dev/null 2>&1
@@ -144,7 +145,8 @@ oversea () {
         uci add_list shadowsocksr.@access_control[0].wan_fw_ips='109.239.140.0/24' 
         uci add_list shadowsocksr.@access_control[0].wan_fw_ips='198.13.38.188/32'
         uci commit shadowsocksr
-        sed -i s'/ip111.cn/www.google.com/g' /usr/bin/ssr-switch
+        sed -i s'/www.qq.com/www.google.com/g' /usr/bin/ssr-switch
+	sed -i s'/www.yahoo.com/www.baidu.com/g' /usr/bin/ssr-switch
         sleep 2
         #/etc/init.d/shadowsocksr start
     fi
