@@ -123,22 +123,22 @@ start() {
 		sleep $cycle_time
 		LOGTIME=$(date "+%Y-%m-%d %H:%M:%S")
 		#判断当前代理是否为缺省服务器
-		if [ "$CURRENT_SERVER" != "$DEFAULT_SERVER" ]; then
-			#echo "not default proxy"
-			echo "$(date "+%Y-%m-%d %H:%M:%S") Current server is not default Main server, try to switch back." >>/tmp/ssrplus.log
-			#检查缺省服务器是否正常
-			if test_proxy $DEFAULT_SERVER; then
-                echo "$(date "+%Y-%m-%d %H:%M:%S") Main server is NOT avilable.Continue using current server." >>/tmp/ssrplus.log	
-			else
-				#echo "switch to default proxy"
-				echo "$(date "+%Y-%m-%d %H:%M:%S") Main server is avilable." >>/tmp/ssrplus.log
-				#缺省服务器正常，切换回来
-				CURRENT_SERVER=$DEFAULT_SERVER
-				switch_proxy $CURRENT_SERVER
-				echo "$(date "+%Y-%m-%d %H:%M:%S") switch to default ["$(uci_get_by_name $CURRENT_SERVER server)"] proxy!" >>/tmp/ssrplus.log
-				continue
-			fi
-		fi
+		#if [ "$CURRENT_SERVER" != "$DEFAULT_SERVER" ]; then
+		#	#echo "not default proxy"
+		#	echo "$(date "+%Y-%m-%d %H:%M:%S") Current server is not default Main server, try to switch back." >>/tmp/ssrplus.log
+		#	#检查缺省服务器是否正常
+		#	if test_proxy $DEFAULT_SERVER; then
+                #echo "$(date "+%Y-%m-%d %H:%M:%S") Main server is NOT avilable.Continue using current server." >>/tmp/ssrplus.log	
+		#	else
+		#		#echo "switch to default proxy"
+		#		echo "$(date "+%Y-%m-%d %H:%M:%S") Main server is avilable." >>/tmp/ssrplus.log
+		#		#缺省服务器正常，切换回来
+		#		CURRENT_SERVER=$DEFAULT_SERVER
+		#		switch_proxy $CURRENT_SERVER
+		#		echo "$(date "+%Y-%m-%d %H:%M:%S") switch to default ["$(uci_get_by_name $CURRENT_SERVER server)"] proxy!" >>/tmp/ssrplus.log
+		#		continue
+		#	fi
+		#fi
 		#判断当前代理是否正常
 		check_proxy
 		current_ret=$?
