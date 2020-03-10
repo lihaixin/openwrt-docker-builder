@@ -31,9 +31,6 @@ echo -e "password\npassword" | (passwd root)
 uci set dropbear.@dropbear[0].Port='22122'
 uci commit dropbear
 
-# 19 关闭防火墙flood,用haproxy时关闭
-uci delete firewall.@defaults[0].syn_flood='1'
-uci commit firewall
 
 # 25 默认关闭docker容器进程
 /etc/init.d/dockerd disable
