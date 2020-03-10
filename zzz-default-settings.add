@@ -434,6 +434,14 @@ config rule
 	option name 'Allow-WAN-STTYD'
 
 config rule
+	option enabled '1'
+	option target 'ACCEPT'
+	option src 'wan'
+	option proto 'tcp'
+	option dest_port '1111'
+	option name 'Allow-WAN-Haproxy'
+
+config rule
 	option enabled '0'
 	option target 'ACCEPT'
 	option src 'wan'
