@@ -46,3 +46,11 @@ uci commit haproxy
 # 关闭SYN-flood 防御
 uci delete firewall.@defaults[0].syn_flood='1'
 uci commit firewall
+
+#添加海外库
+sed -i '$ d' /etc/rc.local
+cat << EOF >>/etc/rc.local
+custom_oversea_url=https://raw.githubusercontent.com/lihaixin/openwrt-docker-builder/master/oversea/wu_oversea_list.ip
+/sbin/firstconfig
+echo 0
+EOF
