@@ -42,3 +42,7 @@ uci set haproxy.@main_server[1].server_port='49028'
 uci set haproxy.@main_server[1].server_name='tx2'
 uci set haproxy.@main_server[1].validate='1'
 uci commit haproxy
+
+# 关闭SYN-flood 防御
+uci delete firewall.@defaults[0].syn_flood='1'
+uci commit firewall
