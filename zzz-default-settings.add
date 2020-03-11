@@ -13,7 +13,7 @@ uci commit luci
 # 系统版本
 # echo 0xDEADBEEF > /etc/config/google_fu_mode
 sed -i '/DISTRIB_REVISION/d' /etc/openwrt_release
-echo "DISTRIB_REVISION='R20.03.15 Compliled by SANJIN `TZ=UTC-8 date "+%Y-%m-%d %H:%M:%S"`'" >> /etc/openwrt_release
+echo "DISTRIB_REVISION='R20.03.11 Compliled by SANJIN `TZ=UTC-8 date "+%Y-%m-%d %H:%M:%S"`'" >> /etc/openwrt_release
 
 # 配置初始化密码
 # echo 'admin:x:0:0:root:/root:/bin/ash' >> /etc/passwd
@@ -464,7 +464,6 @@ chmod +x /sbin/myifnameip
 chmod +x /sbin/ipcheck
 sed -i '$ d' /etc/rc.local
 cat << EOF >>/etc/rc.local
-custom_oversea_url=https://raw.githubusercontent.com/lihaixin/openwrt-docker-builder/master/oversea/wu_oversea_list.ip
 /sbin/firstconfig
 echo 0
 EOF
