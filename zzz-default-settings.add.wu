@@ -1,0 +1,44 @@
+# 定制客户机名字后缀
+routename=$(ip address show dev eth0 | grep link | awk '{print $2}' | cut -c10-17 | sed 's/://g' | tr 'A-Z' 'a-z')
+customname=wu
+routename=$routename$customname
+uci set system.@system[0].hostname=$routename
+uci commit system
+
+#60 开启加速功能(旧版)
+uci set sfe.config.dns_server='8.8.8.8,8.8.4.4'
+uci commit sfe
+
+# 60 开启加速功能(新版)
+uci set flowoffload.@flow[0].dns_server='8.8.8.8,8.8.4.4'
+uci commit flowoffload
+
+# 90 配置shadowsocksr 默认参数 默认出国
+uci set shadowsocksr.@global[0].global_server='cfg064a8f'
+uci set shadowsocksr.@global[0].dports='1'
+uci set shadowsocksr.@global[0].run_mode='oversea'
+uci set shadowsocksr.@global[0].udp_relay_server='same'
+uci set shadowsocksr.@global[0].tunnel_forward='114.114.114.114:53'
+uci commit shadowsocksr
+
+# 99 自定义负载均衡
+/etc/init.d/haproxy start
+/etc/init.d/haproxy enable
+uci delete haproxy.@backup_server[2]
+uci delete haproxy.@backup_server[1]
+uci delete haproxy.@backup_server[0]
+uci set haproxy.@arguments[0]=arguments
+uci set haproxy.@arguments[0].enabled='1'
+uci set haproxy.@main_server[0].server_weight='10'
+uci set haproxy.@main_server[0].server_ip='tx1.gnxw.xyz'
+uci set haproxy.@main_server[0].server_port='49028'
+uci set haproxy.@main_server[0].server_name='tx1'
+uci set haproxy.@main_server[0].validate='1'
+
+uci add haproxy main_server
+uci set haproxy.@main_server[1].server_weight='10'
+uci set haproxy.@main_server[1].server_ip='tx2.gnxw.xyz'
+uci set haproxy.@main_server[1].server_port='49028'
+uci set haproxy.@main_server[1].server_name='tx2'
+uci set haproxy.@main_server[1].validate='1'
+uci commit haproxy
