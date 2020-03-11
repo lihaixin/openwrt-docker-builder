@@ -169,8 +169,8 @@ uci commit flowoffload
 /etc/init.d/samba disable
 # /etc/init.d/pptpd stop
 # /etc/init.d/pptpd disable
-# /etc/init.d/xl2tpd stop
-# /etc/init.d/xl2tpd disable
+/etc/init.d/xl2tpd stop
+/etc/init.d/xl2tpd disable
 /etc/init.d/nlbwmon stop
 /etc/init.d/nlbwmon disable
 # /etc/init.d/etherwake disable
