@@ -3,8 +3,6 @@
 # routename=`cat /proc/sys/kernel/random/uuid | cut -c1-8`
 # routename=$(ifconfig eth0|grep eth0|awk '{print $5}' | cut -c10-17 | sed 's/://g')
 routename=$(ip address show dev eth0 | grep link | awk '{print $2}' | cut -c10-17 | sed 's/://g' | tr 'A-Z' 'a-z')
-customname=wu
-routename=$routename$customname
 uci set system.@system[0].hostname=$routename
 uci commit system
 
@@ -15,7 +13,7 @@ uci commit luci
 # 系统版本
 # echo 0xDEADBEEF > /etc/config/google_fu_mode
 sed -i '/DISTRIB_REVISION/d' /etc/openwrt_release
-echo "DISTRIB_REVISION='R20.03.05 Compliled by SANJIN `TZ=UTC-8 date "+%Y-%m-%d %H:%M:%S"`'" >> /etc/openwrt_release
+echo "DISTRIB_REVISION='R20.03.15 Compliled by SANJIN `TZ=UTC-8 date "+%Y-%m-%d %H:%M:%S"`'" >> /etc/openwrt_release
 
 # 配置初始化密码
 # echo 'admin:x:0:0:root:/root:/bin/ash' >> /etc/passwd
@@ -201,9 +199,8 @@ uci commit vlmcsd
 # 90 配置shadowsocksr 默认参数
 uci set shadowsocksr.@global[0].global_server='cfg064a8f'
 uci set shadowsocksr.@global[0].dports='1'
-uci set shadowsocksr.@global[0].run_mode='oversea'
-uci set shadowsocksr.@global[0].udp_relay_server='same'
-uci set shadowsocksr.@global[0].tunnel_forward='114.114.114.114:53'
+uci set shadowsocksr.@global[0].run_mode='route'
+uci set shadowsocksr.@global[0].tunnel_forward='8.8.8.8:53'
 uci add shadowsocksr servers
 uci set shadowsocksr.@servers[0]=servers
 uci set shadowsocksr.@servers[0].type='v2ray'
@@ -217,7 +214,7 @@ uci set shadowsocksr.@servers[0].transport='tcp'
 uci set shadowsocksr.@servers[0].tcp_guise='none'
 uci set shadowsocksr.@servers[0].mux='1'
 uci set shadowsocksr.@servers[0].concurrency='8'
-uci set shadowsocksr.@servers[0].switch_enable='1'
+uci set shadowsocksr.@servers[0].switch_enable='0'
 uci set shadowsocksr.@servers[0].local_port='1234'
 
 uci commit shadowsocksr
@@ -342,26 +339,9 @@ uci set polipo.general.tunnelAllowedPorts='1-65535'
 /etc/init.d/vnstat disable
 
 # 99 自定义负载均衡
-/etc/init.d/haproxy start
-/etc/init.d/haproxy enable
-uci delete haproxy.@backup_server[2]
-uci delete haproxy.@backup_server[1]
-uci delete haproxy.@backup_server[0]
-uci set haproxy.@arguments[0]=arguments
-uci set haproxy.@arguments[0].enabled='1'
-uci set haproxy.@main_server[0].server_weight='10'
-uci set haproxy.@main_server[0].server_ip='47.112.100.126'
-uci set haproxy.@main_server[0].server_port='59028'
-uci set haproxy.@main_server[0].server_name='ali'
-uci set haproxy.@main_server[0].validate='1'
+/etc/init.d/haproxy stop
+/etc/init.d/haproxy disable
 
-uci add haproxy main_server
-uci set haproxy.@main_server[1].server_weight='10'
-uci set haproxy.@main_server[1].server_ip='134.175.74.240'
-uci set haproxy.@main_server[1].server_port='59028'
-uci set haproxy.@main_server[1].server_name='tx'
-uci set haproxy.@main_server[1].validate='1'
-uci commit haproxy
 
 /etc/init.d/transmission stop
 /etc/init.d/transmission disable
