@@ -356,6 +356,17 @@ uci set polipo.general.tunnelAllowedPorts='1-65535'
 /etc/init.d/amule stop
 /etc/init.d/amule disable
 
+/etc/init.d/clash stop
+/etc/init.d/clash disable
+
+/etc/init.d/openclash stop
+/etc/init.d/openclash disable
+
+/etc/init.d/passwall stop
+/etc/init.d/passwall disable
+
+
+
 ### 4.3.4 配置单双网卡 自定义双网卡防火墙
 if [ `grep -c "eth" /proc/net/dev` -eq '1' ]; then
     ## 以下为旁路由专用,关闭DHCP
