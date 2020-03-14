@@ -467,6 +467,8 @@ EOF
     service dnsmasq restart
 fi
 
+### 过滤掉日志里/etc/rc.d/S60flowoffload:    ! Skipping due to path error: No such file or directory
+touch /var/etc/passwall.include
 ### 4.3.5 安装开机脚本
 # https://www.mivm.cn/openwrt-speedtest/
 chmod +x /sbin/firstconfig
