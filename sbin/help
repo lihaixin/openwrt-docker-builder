@@ -266,7 +266,7 @@ fi
 oversea
 get_ip
 hfrp
-hnpc
+#hnpc
 #frpme
 #npsme
 
