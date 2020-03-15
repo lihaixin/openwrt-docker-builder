@@ -2,11 +2,20 @@
 # (C) 2019 openwrt.org
 # nano package/base-files/files/sbin/firstconfig
 # 安装speedtest
-if [ -f /etc/speedtest_cli-2.1.2-py2.py3-none-any.whl ]; then
-    pip3 install  /etc/speedtest_cli-2.1.2-py2.py3-none-any.whl
-    rm -rf /etc/speedtest_cli-2.1.2-py2.py3-none-any.whl
+#if [ -f /etc/speedtest_cli-2.1.2-py2.py3-none-any.whl ]; then
+#    pip3 install  /etc/speedtest_cli-2.1.2-py2.py3-none-any.whl
+#    rm -rf /etc/speedtest_cli-2.1.2-py2.py3-none-any.whl
+#    mv /etc/udpping.py /sbin/udpping.py
+#    chmod +x /sbin/udpping.py
+#fi
+
+if [ -f /etc/speedtest ]; then
+    mv /etc/speedtest.py /sbin/speedtest.py
+    sleep 1
     mv /etc/udpping.py /sbin/udpping.py
+    sleep 1
     chmod +x /sbin/udpping.py
+    chmod +x /sbin/speedtest.py
 fi
 
 # 配置路由器名称和样式
