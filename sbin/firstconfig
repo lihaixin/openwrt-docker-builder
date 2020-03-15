@@ -9,13 +9,13 @@
 #    chmod +x /sbin/udpping.py
 #fi
 
-if [ -f /etc/speedtest ]; then
-    mv /etc/speedtest.py /sbin/speedtest.py
+if [ -f /etc/speedtest.py ]; then
+    mv /etc/speedtest.py /sbin/speedtest
     sleep 1
-    mv /etc/udpping.py /sbin/udpping.py
+    mv /etc/udpping.py /sbin/udpping
     sleep 1
-    chmod +x /sbin/udpping.py
-    chmod +x /sbin/speedtest.py
+    chmod +x /sbin/udpping
+    chmod +x /sbin/speedtest
 fi
 
 # 配置路由器名称和样式
