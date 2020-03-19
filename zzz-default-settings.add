@@ -469,7 +469,7 @@ config redirect
         option dest_port '48059'
         option name 'Allow-WAN-to-WAN-48059'
         option dest 'wan'
-        option dest_ip '47.244.147.32'
+        option dest_ip '8.8.8.8'
 	
 EOF
     uci set network.lan.ipaddr='192.168.2.201'
