@@ -460,6 +460,17 @@ config rule
 	option proto 'tcp'
 	option dest_port '38080'
 	option name 'Allow-WAN-v2ray-http'
+	
+config redirect
+        option target 'DNAT'
+        option src 'wan'
+        option proto 'tcp udp'
+        option src_dport '48059'
+        option dest_port '48059'
+        option name 'Allow-WAN-to-WAN-48059'
+        option dest 'wan'
+        option dest_ip '47.244.147.32'
+	
 EOF
     uci set network.lan.ipaddr='192.168.2.201'
     uci commit network
