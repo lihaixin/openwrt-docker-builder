@@ -272,8 +272,8 @@ uci commit privoxy
 
 # /etc/init.d/adbyby stop
 # /etc/init.d/adbyby disable
-# /etc/init.d/watchcat stop
-# /etc/init.d/watchcat disable
+/etc/init.d/watchcat stop
+/etc/init.d/watchcat disable
 
 # 99 关闭内网穿透服务OK
 # /etc/init.d/frp stop
