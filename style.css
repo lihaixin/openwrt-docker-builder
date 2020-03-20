@@ -1689,6 +1689,14 @@ div > .table > .tbody > .tr:nth-of-type(2n) {
     content: "\e90d";
     color: #2dce89!important;
 }
+.main > .main-left > .nav > .slide > .menu[data-title= Statistics ]:before{
+    content: "\e90d";
+    color: #2dce89!important;
+}
+.main > .main-left > .nav > .slide > .menu[data-title= Control ]:before{
+    content: "\e908";
+    color: #8965e0!important;
+}
 .main > .main-left > .nav > .slide > .menu[data-title= Docker ]:before{
     content: "\e90f";
     color: #6699ff!important;
