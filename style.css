@@ -134,6 +134,9 @@
 .icon-Network:before {
     content: "\e908";
 }
+.icon-Control:before {
+    content: "\e908";
+}
 .icon-services:before {
     content: "\e909";
 }
