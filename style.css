@@ -1677,10 +1677,6 @@ div > .table > .tbody > .tr:nth-of-type(2n) {
     content: "\e90c";
     color: #f3a4b5!important;
 }
-.main > .main-left > .nav > .slide > .menu[data-title= Control ]:before{
-    content: "\e908";
-    color: #8965e0!important;
-}
 .main > .main-left > .nav > .slide > .menu[data-title= VPN ]:before{
     content: "\e90b";
     color: #172b4d!important;
@@ -1690,10 +1686,6 @@ div > .table > .tbody > .tr:nth-of-type(2n) {
     color: #8965e0!important;
 }
 .main > .main-left > .nav > .slide > .menu[data-title= Bandwidth_Monitor ]:before{
-    content: "\e90d";
-    color: #2dce89!important;
-}
-.main > .main-left > .nav > .slide > .menu[data-title= Statistics ]:before{
     content: "\e90d";
     color: #2dce89!important;
 }
