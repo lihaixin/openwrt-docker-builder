@@ -30,6 +30,7 @@ hfrp () {
     # 调整帮助frp信息
     killall hfrpc > /dev/null 2>&1
     if [ ! -f "/var/sbin/hfrpc" ];then
+        mkdir -p /var/sbin
         cp /usr/bin/frpc /var/sbin/hfrpc
     fi
     if [ ! -d "/var/etc/frp" ];then
