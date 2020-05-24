@@ -13,7 +13,7 @@ uci commit luci
 # 系统版本
 # echo 0xDEADBEEF > /etc/config/google_fu_mode
 sed -i '/DISTRIB_REVISION/d' /etc/openwrt_release
-echo "DISTRIB_REVISION='R20.04.16 Compliled by SANJIN `TZ=UTC-8 date "+%Y-%m-%d %H:%M:%S"`'" >> /etc/openwrt_release
+echo "DISTRIB_REVISION='R20.05.9 Compliled by SANJIN `TZ=UTC-8 date "+%Y-%m-%d %H:%M:%S"`'" >> /etc/openwrt_release
 
 # 配置初始化密码
 # echo 'admin:x:0:0:root:/root:/bin/ash' >> /etc/passwd
