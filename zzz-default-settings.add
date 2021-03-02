@@ -133,8 +133,8 @@ uci commit tcpproxy
 
 # 50 配置web 支持 https 访问
 # uci set uhttpd.main.index_page='cgi-bin/luci'
-uci set uhttpd.main.listen_https='0.0.0.0:44344'
-uci commit uhttpd
+# uci set uhttpd.main.listen_https='0.0.0.0:44344'
+# uci commit uhttpd
 
 
 #50 自定义SQM
@@ -225,6 +225,8 @@ uci set udptools.@udpconfig[0].server='1.1.1.1'
 uci set udptools.@udpconfig[0].serverport='15900'
 uci set udptools.@udpconfig[0].password='pwd'
 uci set udptools.@udpconfig[0].clientport='15900'
+uci set udptools.@udpconfig[0].fec='2:2'
+uci set udptools.@udpconfig[0].timeout='1'
 uci commit udptools
 /etc/init.d/udptools stop
 /etc/init.d/udptools disable
