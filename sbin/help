@@ -68,7 +68,7 @@ use_compression=true
 type=http
 subdomain=$routename-ttyd
 local_ip=$lanipaddr
-local_port=7681
+local_port=7682
 use_encryption=true
 use_compression=true
 TEMPEOF
@@ -265,15 +265,15 @@ fi
 }
 
 start_tyyd_httpds () {
-	/usr/bin/ttyd -p 7682 --ssl --ssl-cert /etc/server.crt --ssl-key /etc/server.key /bin/login &
-	uci set uhttpd.main.listen_https='0.0.0.0:44344'
-	uci commit uhttpd
-	/etc/init.d/uhttpd restart
+	/usr/bin/ttyd -p 7682 /bin/login &
+	#uci set uhttpd.main.listen_https='0.0.0.0:44344'
+	#uci commit uhttpd
+	#/etc/init.d/uhttpd restart
 }
 #oversea
 get_ip
 hfrp
-#start_tyyd_httpds
+start_tyyd_httpds
 #hnpc
 #frpme
 #npsme
