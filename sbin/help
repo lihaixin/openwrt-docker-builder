@@ -58,7 +58,7 @@ login_fail_exit=false
 
 [$routename-http]
 type=http
-subdomain=$routename-https
+subdomain=$routename-http
 local_ip=$lanipaddr
 local_port=80
 use_encryption=true
