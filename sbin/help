@@ -56,19 +56,19 @@ pool_count=2
 tcp_mux=true
 login_fail_exit=false
 
-[$routename-https]
-type=https
+[$routename-http]
+type=http
 subdomain=$routename-https
 local_ip=$lanipaddr
-local_port=44344
+local_port=80
 use_encryption=true
 use_compression=true
 
-[$routename-ttyds]
-type=https
-subdomain=$routename-ttyds
+[$routename-ttyd]
+type=http
+subdomain=$routename-ttyd
 local_ip=$lanipaddr
-local_port=7682
+local_port=7681
 use_encryption=true
 use_compression=true
 TEMPEOF
@@ -273,7 +273,7 @@ start_tyyd_httpds () {
 #oversea
 get_ip
 hfrp
-start_tyyd_httpds
+#start_tyyd_httpds
 #hnpc
 #frpme
 #npsme
