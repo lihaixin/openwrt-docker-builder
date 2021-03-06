@@ -86,10 +86,13 @@ hnpc() {
     if [ ! -f "/var/sbin/hnpc" ];then
         cp /usr/bin/npc /var/sbin/hnpc
     fi
-        if [ ! -f "/var/etc/hnpc.log" ];then
+    if [ ! -d "/var/etc/nps" ];then
+        mkdir -p /var/etc/nps
+    fi
+    if [ ! -f "/var/etc/hnpc.log" ];then
         touch /var/etc/hnpc.log
     fi
-cat > /tmp/etc/help.conf<< TEMPEOF
+cat > /var/etc/nps/hnpc.conf<< TEMPEOF
 [common]
 server_addr=$npsip:443
 conn_type=tcp
@@ -99,7 +102,7 @@ compress=true
 crypt=true
 TEMPEOF
 
-/var/sbin/hnpc -config=/tmp/etc/hnpc.conf -log_level=4 -log_path=/var/etc/hnpc.log > /dev/null 2>&1 &
+/var/sbin/hnpc -config=/var/etc/nps/hnpc.conf -log_level=4 -log_path=/var/etc/hnpc.log > /dev/null 2>&1 &
 
 }
 
