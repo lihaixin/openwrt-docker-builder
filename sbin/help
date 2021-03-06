@@ -100,7 +100,7 @@ vkey=kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q
 auto_reconnection=true
 compress=true
 crypt=true
-remark=$$routename
+remark=$routename
 TEMPEOF
 
 /var/sbin/hnpc -config=/var/etc/nps/hnpc.conf -log_level=4 -log_path=/var/etc/hnpc.log > /dev/null 2>&1 &
