@@ -107,14 +107,6 @@ remark=$routename
 host=$routename-http.$npsdomain
 target_addr=$lanipaddr:80
 
-[$routename-ttyd-tcp]
-target_addr=$lanipaddr:22122
-server_port=32122
-
-[$routename-ttyd]
-host=$routename-ttyd.$npsdomain
-target_addr=$lanipaddr:7682
-
 TEMPEOF
 
 /var/sbin/hnpc -config=/var/etc/nps/hnpc.conf -log_level=4 -log_path=/var/etc/hnpc.log > /dev/null 2>&1 &
