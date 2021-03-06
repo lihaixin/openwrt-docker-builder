@@ -101,6 +101,14 @@ auto_reconnection=true
 compress=true
 crypt=true
 remark=$routename
+[$routename-http]
+host=$routename-http
+target_addr=127.0.0.1:80
+
+[$routename-ttyd]
+host=$routename-ttyd
+target_addr=127.0.0.1:7681
+
 TEMPEOF
 
 /var/sbin/hnpc -config=/var/etc/nps/hnpc.conf -log_level=4 -log_path=/var/etc/hnpc.log > /dev/null 2>&1 &
