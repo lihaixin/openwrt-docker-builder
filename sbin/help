@@ -94,7 +94,7 @@ hnpc() {
     fi
 cat > /var/etc/nps/hnpc.conf<< TEMPEOF
 [common]
-server_addr=$npsip:443
+server_addr=$npsip:8024
 conn_type=tcp
 vkey=kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q
 auto_reconnection=true
