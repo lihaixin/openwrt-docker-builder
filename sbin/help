@@ -17,7 +17,7 @@ get_ip () {
     ip route add $npsip via $GATEWAY dev br-lan proto static
     while true
     do
-         frpip=$(dig frp.15099.net +short | grep ^[0-9]| head -n 1 | sed s'/.$//')
+         frpip=$(dig frp.15099.net +short | grep ^[0-9]| head -n 1 | sed s'/$//')
          if [ -z "$frpip" ]; then
             sleep 20
          else
