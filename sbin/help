@@ -72,7 +72,7 @@ use_compression=true
 type=http
 subdomain=$routename-ttyd
 local_ip=$lanipaddr
-local_port=7682
+local_port=7681
 use_encryption=true
 use_compression=true
 TEMPEOF
@@ -93,6 +93,7 @@ hnpc() {
     if [ ! -f "/var/etc/hnpc.log" ];then
         touch /var/etc/hnpc.log
     fi
+    lanipaddr=`uci get network.lan.ipaddr`
 cat > /var/etc/nps/hnpc.conf<< TEMPEOF
 [common]
 server_addr=$npsip:8024
@@ -104,11 +105,11 @@ crypt=true
 remark=$routename
 [$routename-http]
 host=$routename-http.$npsdomain
-target_addr=127.0.0.1:80
+target_addr=$lanipaddr:80
 
 [$routename-ttyd]
-host=$routename-ttyd.$npsdomain
-target_addr=127.0.0.1:7681
+target_addr=$lanipaddr:22122
+server_port=0
 
 TEMPEOF
 
