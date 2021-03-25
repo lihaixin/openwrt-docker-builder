@@ -92,8 +92,8 @@ uci commit tinyproxy
 
 
 # 配置nps 
-/etc/init.d/nps start
-/etc/init.d/nps enable
+/etc/init.d/nps stop
+/etc/init.d/nps disable
 uci set nps.@nps[0].enabled='0'
 uci set nps.@nps[0].server_addr='127.0.0.1'
 uci set nps.@nps[0].vkey='kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q'
@@ -278,12 +278,16 @@ uci commit privoxy
 /etc/init.d/watchcat disable
 
 # 99 关闭内网穿透服务OK
-# /etc/init.d/frp stop
-# /etc/init.d/frp disable
+/etc/init.d/frp stop
+/etc/init.d/frp disable
 uci set frp.common.server_addr='127.0.0.1'
 uci set frp.common.token='kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q'
 uci set frp.common.enabled='0'
 uci commit frp
+
+# 99 关闭内网穿透frps服务端
+/etc/init.d/frps stop
+/etc/init.d/frps disable
 
 # 99 关闭netdata，其实大部分用不上
 /etc/init.d/netdata disable
