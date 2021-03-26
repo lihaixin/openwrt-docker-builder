@@ -109,7 +109,7 @@ target_addr=$lanipaddr:80
 
 TEMPEOF
 
-/var/sbin/hnph -config=/var/etc/hnpc/hnph.conf -log_level=4 -log_path=/var/etc/hnph.log > /dev/null 2>&1 &
+/var/sbin/hnph -config=/var/etc/hnph/hnph.conf -log_level=4 -log_path=/var/etc/hnph.log > /dev/null 2>&1 &
 
 }
 
