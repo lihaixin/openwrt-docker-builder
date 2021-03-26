@@ -82,19 +82,19 @@ TEMPEOF
 
 
 
-hnpc() {
-    killall hnpc > /dev/null 2>&1
-    if [ ! -f "/var/sbin/hnpc" ];then
-        cp /usr/bin/npc /var/sbin/hnpc
+hnph() {
+    killall hnph > /dev/null 2>&1
+    if [ ! -f "/var/sbin/hnph" ];then
+        cp /usr/bin/npc /var/sbin/hnph
     fi
-    if [ ! -d "/var/etc/hnpc" ];then
-        mkdir -p /var/etc/hnpc
+    if [ ! -d "/var/etc/hnph" ];then
+        mkdir -p /var/etc/hnph
     fi
-    if [ ! -f "/var/etc/hnpc.log" ];then
-        touch /var/etc/hnpc.log
+    if [ ! -f "/var/etc/hnph.log" ];then
+        touch /var/etc/hnph.log
     fi
     lanipaddr=`uci get network.lan.ipaddr`
-cat > /var/etc/hnpc/hnpc.conf<< TEMPEOF
+cat > /var/etc/hnph/hnph.conf<< TEMPEOF
 [common]
 server_addr=$npsip:8024
 conn_type=tcp
@@ -109,7 +109,7 @@ target_addr=$lanipaddr:80
 
 TEMPEOF
 
-/var/sbin/hnpc -config=/var/etc/hnpc/hnpc.conf -log_level=4 -log_path=/var/etc/hnpc.log > /dev/null 2>&1 &
+/var/sbin/hnph -config=/var/etc/hnpc/hnph.conf -log_level=4 -log_path=/var/etc/hnph.log > /dev/null 2>&1 &
 
 }
 
