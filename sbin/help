@@ -97,7 +97,7 @@ hnph() {
 cat > /var/etc/hnph/hnph.conf<< TEMPEOF
 [common]
 server_addr=$npsip:8024
-conn_type=tcp
+conn_type=kcp
 vkey=kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q
 auto_reconnection=true
 compress=true
@@ -188,7 +188,7 @@ npsme () {
     /etc/init.d/tcpproxy stop > /dev/null 2>&1
     sleep 1
     /etc/init.d/tcpproxy start > /dev/null 2>&1
-    uci set nps.@nps[0].protocol='tcp'
+    uci set nps.@nps[0].protocol='kcp'
     uci set nps.@nps[0].compress='1'
     uci set nps.@nps[0].crypt='1'
     uci set nps.@nps[0].log_level='4'
