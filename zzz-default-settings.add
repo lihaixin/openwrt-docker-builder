@@ -29,6 +29,8 @@ echo -e "password\npassword" | (passwd root)
 uci set dropbear.@dropbear[0].Port='22122'
 uci commit dropbear
 
+/etc/init.d/mwan3 disable
+/etc/init.d/mwan3 stop
 
 # 25 默认关闭docker容器进程
 /etc/init.d/dockerd disable
@@ -173,6 +175,8 @@ uci commit flowoffload
 /etc/init.d/nlbwmon disable
 # /etc/init.d/etherwake disable
 # /etc/init.d/etherwake stop
+/etc/init.d/mwan3helper stop
+/etc/init.d/mwan3helper disable
 
 # 70 关闭打印
 /etc/init.d/usb_printer stop
