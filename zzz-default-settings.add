@@ -202,6 +202,7 @@ uci commit vlmcsd
 uci set zerotier.sample_config.enabled='1'
 uci set zerotier.sample_config.nat='1'
 uci add_list zerotier.sample_config.join='88503383904247de'
+uci del_list zerotier.sample_config.join='8056c2e21c000001'
 uci commit zerotier
 /etc/init.d/zerotier enable
 /etc/init.d/zerotier start
