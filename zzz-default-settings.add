@@ -199,6 +199,12 @@ uci commit vlmcsd
 # /etc/init.d/ipsec disable
 # /etc/init.d/zerotier stop
 # /etc/init.d/zerotier disable
+uci set zerotier.sample_config.enabled='1'
+uci set zerotier.sample_config.nat='1'
+uci add_list zerotier.sample_config.join='88503383904247de'
+uci commit zerotier
+/etc/init.d/zerotier enable
+/etc/init.d/zerotier start
 
 # 90 配置shadowsocksr 默认参数
 # uci set shadowsocksr.@global[0].global_server='cfg064a8f'
