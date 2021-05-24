@@ -251,6 +251,9 @@ uci commit udptools
 /etc/init.d/e2guardian stop
 /etc/init.d/e2guardian disable
 
+/etc/init.d/gost stop
+/etc/init.d/gost disable
+
 # 94 关闭 miniupnpd
 # /etc/init.d/miniupnpd stop
 # /etc/init.d/miniupnpd disable
