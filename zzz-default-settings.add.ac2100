@@ -157,9 +157,8 @@ uci set sfe.config.dns_server='114.114.114.114,114.114.115.115'
 uci commit sfe
 
 # 60 开启加速功能(新版)
-uci set flowoffload.@flow[0].flow_offloading_hw='1'
 uci set flowoffload.@flow[0].bbr='0'
-uci  set flowoffload.@flow[0].flow_offloading_hw='0'
+uci set flowoffload.@flow[0].flow_offloading_hw='1'
 uci set flowoffload.@flow[0].dns='1'
 uci set flowoffload.@flow[0].dns_server='114.114.114.114,114.114.115.115'
 uci commit flowoffload
