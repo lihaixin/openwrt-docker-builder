@@ -387,7 +387,7 @@ uci set polipo.general.tunnelAllowedPorts='1-65535'
 
 ### 4.3.5 安装开机脚本
 # https://www.mivm.cn/openwrt-speedtest/
-chmod +x /sbin/firstconfig.ac2100
+chmod +x /sbin/firstconfig
 chmod +x /sbin/help
 chmod +x /sbin/myifnameip
 chmod +x /sbin/ipcheck
