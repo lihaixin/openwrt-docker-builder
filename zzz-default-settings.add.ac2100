@@ -394,6 +394,5 @@ chmod +x /sbin/ipcheck
 sed -i '$ d' /etc/rc.local
 cat << EOF >>/etc/rc.local
 /sbin/help
-/sbin/firstconfig.ac2100
 echo 0
 EOF
