@@ -396,3 +396,13 @@ cat << EOF >>/etc/rc.local
 /sbin/help
 echo 0
 EOF
+
+###修改测试脚本
+if [ -f /etc/speedtest.py ]; then
+    mv /etc/speedtest.py /sbin/speedtest
+    sleep 1
+    mv /etc/udpping.py /sbin/udpping
+    sleep 1
+    chmod +x /sbin/udpping
+    chmod +x /sbin/speedtest
+fi
