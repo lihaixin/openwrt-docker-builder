@@ -29,26 +29,6 @@ echo -e "password\npassword" | (passwd root)
 uci set dropbear.@dropbear[0].Port='22122'
 uci commit dropbear
 
-# 25 默认关闭docker容器进程
-/etc/init.d/dockerd disable
-/etc/init.d/dockerd stop
-
-# 25 配置 RNG 生成更多的熵,用于加密调用的随机数
-# /etc/init.d/rngd enable
-# uci set system.@rngd[0]='rngd'
-# uci set system.@rngd[0].enabled='1'
-# uci set system.@rngd[0].device='/dev/urandom'
-# uci commit system
-# /etc/init.d/rngd restart
-# sysctl kernel.random.entropy_avail
-
-# 28 关闭温度监控（不在后台加进程）
-# /etc/init.d/lm-sensors disable
-# /etc/init.d/lm-sensors stop
-
-# 30 关闭dns广告（不在后台加进程）
-# /etc/init.d/adblock disable
-# /etc/init.d/adblock stop
 
 # 35 配置路由器默认DNS缓存从默认150调整到1024,使用dnscache缓存
 # uci set dhcp.@dnsmasq[0].allservers='1' <--现在使用pdnd作为上流dns，所以不开启
@@ -59,17 +39,6 @@ uci set dhcp.lan.limit='99'
 uci set dhcp.lan.force='1'
 uci commit dhcp
 
-# /etc/init.d/hd-idle stop
-# /etc/init.d/hd-idle disable
-/etc/init.d/minidlna stop
-/etc/init.d/minidlna disable
-/etc/init.d/vsftpd stop
-/etc/init.d/vsftpd disable
-/etc/init.d/ocserv stop
-/etc/init.d/ocserv disable
-/etc/init.d/verysync stop
-/etc/init.d/verysync disable
-
 
 # 配置nps 
 
@@ -78,37 +47,6 @@ uci set nps.@nps[0].server_addr='127.0.0.1'
 uci set nps.@nps[0].vkey='kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q'
 uci commit nps
 
-/etc/init.d/tcpproxy stop
-uci set tcpproxy.@listen[0]=listen
-uci set tcpproxy.@listen[0].disabled='0'
-uci set tcpproxy.@listen[0].local_addr='127.0.0.1'
-uci set tcpproxy.@listen[0].local_port='8024'
-uci set tcpproxy.@listen[0].resolv='ipv4'
-uci set tcpproxy.@listen[0].remote_addr='nps.15099.net'
-uci set tcpproxy.@listen[0].remote_port='443'
-uci set tcpproxy.@listen[0].remote_resolv='ipv4'
-uci delete tcpproxy.@listen[0].source_addr='2a02:3e0:2002:1:215:58ff:fe31:2ce7'
-
-uci set tcpproxy.@listen[1]=listen
-uci set tcpproxy.@listen[1].disabled='0'
-uci set tcpproxy.@listen[1].local_addr='0.0.0.0'
-uci set tcpproxy.@listen[1].local_port='53683'
-uci set tcpproxy.@listen[1].resolv='ipv4'
-uci set tcpproxy.@listen[1].remote_addr='127.0.0.1'
-uci set tcpproxy.@listen[1].remote_port='53682'
-uci set tcpproxy.@listen[1].remote_resolv='ipv4'
-uci add tcpproxy listen
-uci set tcpproxy.@listen[2]=listen
-uci set tcpproxy.@listen[2].disabled='0'
-uci set tcpproxy.@listen[2].local_addr='127.0.0.1'
-uci set tcpproxy.@listen[2].local_port='7000'
-uci set tcpproxy.@listen[2].resolv='ipv4'
-uci set tcpproxy.@listen[2].remote_addr='frp.15099.net'
-uci set tcpproxy.@listen[2].remote_port='443'
-uci set tcpproxy.@listen[2].remote_resolv='ipv4'
-
-uci commit tcpproxy
-/etc/init.d/tcpproxy disable
 
 # 50 配置web 支持 https 访问
 # uci set uhttpd.main.index_page='cgi-bin/luci'
@@ -141,30 +79,12 @@ uci set flowoffload.@flow[0].dns_server='114.114.114.114,114.114.115.115'
 uci commit flowoffload
 
 # 60 关闭网络共享 和网络唤醒
-/etc/init.d/samba stop
-/etc/init.d/samba disable
-# /etc/init.d/pptpd stop
-# /etc/init.d/pptpd disable
 /etc/init.d/xl2tpd stop
 /etc/init.d/xl2tpd disable
-/etc/init.d/nlbwmon stop
-/etc/init.d/nlbwmon disable
-# /etc/init.d/etherwake disable
-# /etc/init.d/etherwake stop
-
-
 
 #90 关闭windows和office激活服务
 uci set vlmcsd.config.enabled='1'
 uci commit vlmcsd
-#/etc/init.d/kms disable
-#/etc/init.d/kms stop
-
-# /etc/init.d/openvpn stop
-# /etc/init.d/openvpn disable
-
-# /etc/init.d/ipsec stop
-# /etc/init.d/ipsec disable
 
 uci set zerotier.sample_config.enabled='1'
 uci set zerotier.sample_config.nat='1'
@@ -210,25 +130,11 @@ uci commit udptools
 /etc/init.d/udptools disable
 
 
-/etc/init.d/e2guardian stop
-/etc/init.d/e2guardian disable
-
-
-
 # 94 关闭 miniupnpd
 # /etc/init.d/miniupnpd stop
 # /etc/init.d/miniupnpd disable
 # /etc/init.d/gpio_switch disable
 
-
-# 97 关闭防火墙广告
-# /etc/init.d/unblockmusic stop
-# /etc/init.d/unblockmusic disable
-
-# /etc/init.d/adbyby stop
-# /etc/init.d/adbyby disable
-/etc/init.d/watchcat stop
-/etc/init.d/watchcat disable
 
 # 99 内网穿透服务
 
