@@ -1,8 +1,8 @@
 ### 4.3.1 配置路由器主机名和样式
 # 根据网卡信息生成主机名
 # routename=`cat /proc/sys/kernel/random/uuid | cut -c1-8`
-# routename=$(ifconfig eth0|grep eth0|awk '{print $5}' | cut -c10-17 | sed 's/://g')
-routename=$(ip address show dev eth0 | grep link | awk '{print $2}' | cut -c10-17 | sed 's/://g' | tr 'A-Z' 'a-z')
+# routename=$(ifconfig eth0|grep eth0|awk '{print $5}' | cut -c13-17 | sed 's/://g')
+routename=X86_$(ip address show dev eth0 | grep link | awk '{print $2}' | cut -c13-17 | sed 's/://g' | tr 'A-Z' 'a-z')
 uci set system.@system[0].hostname=$routename
 uci commit system
 
@@ -504,6 +504,21 @@ chmod +x /sbin/ipcheck
 sed -i '$ d' /etc/rc.local
 cat << EOF >>/etc/rc.local
 /sbin/help
-/sbin/firstconfig
 echo 0
+
+# 添加X64软路由器mylan.com重定向路由器
+cat << 'EOF' >>/sbin/help
+lanipaddr=`uci get network.lan.ipaddr`
+echo $lanipaddr mylan.com > /tmp/hosts/mylan
+service dnsmasq restart
+EOF
+###修改测试脚本
+if [ -f /etc/speedtest.py ]; then
+    mv /etc/speedtest.py /sbin/speedtest
+    sleep 1
+    mv /etc/udpping.py /sbin/udpping
+    sleep 1
+    chmod +x /sbin/udpping
+    chmod +x /sbin/speedtest
+fi
 EOF
