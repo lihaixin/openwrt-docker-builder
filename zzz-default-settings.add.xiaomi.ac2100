@@ -29,21 +29,18 @@ echo -e "password\npassword" | (passwd root)
 uci set dropbear.@dropbear[0].Port='22122'
 uci commit dropbear
 
-/etc/init.d/mwan3 disable
-/etc/init.d/mwan3 stop
-
 # 25 默认关闭docker容器进程
 /etc/init.d/dockerd disable
 /etc/init.d/dockerd stop
 
 # 25 配置 RNG 生成更多的熵,用于加密调用的随机数
-/etc/init.d/rngd enable
-uci set system.@rngd[0]='rngd'
-uci set system.@rngd[0].enabled='1'
-uci set system.@rngd[0].device='/dev/urandom'
-uci commit system
-/etc/init.d/rngd restart
-sysctl kernel.random.entropy_avail
+# /etc/init.d/rngd enable
+# uci set system.@rngd[0]='rngd'
+# uci set system.@rngd[0].enabled='1'
+# uci set system.@rngd[0].device='/dev/urandom'
+# uci commit system
+# /etc/init.d/rngd restart
+# sysctl kernel.random.entropy_avail
 
 # 28 关闭温度监控（不在后台加进程）
 # /etc/init.d/lm-sensors disable
@@ -61,25 +58,6 @@ uci set dhcp.lan.start='11'
 uci set dhcp.lan.limit='99'
 uci set dhcp.lan.force='1'
 uci commit dhcp
-# 关闭ipv6局域网分发
-/etc/init.d/odhcpd stop
-/etc/init.d/odhcpd disable
-
-# 50 关闭 tinyproxy 自定义
-uci set tinyproxy.@tinyproxy[0].Allow='127.0.0.1'
-uci add_list tinyproxy.@tinyproxy[0].Allow='10.0.0.0/8'
-uci add_list tinyproxy.@tinyproxy[0].Allow='172.16.0.0/12'
-uci add_list tinyproxy.@tinyproxy[0].Allow='192.168.0.0/16'
-uci add_list tinyproxy.@tinyproxy[0].Allow='0.0.0.0/0'
-uci set tinyproxy.@tinyproxy[0].ConnectPort='443'
-uci add_list tinyproxy.@tinyproxy[0].ConnectPort='80'
-uci add_list tinyproxy.@tinyproxy[0].ConnectPort='0'
-uci set tinyproxy.@tinyproxy[0].enabled='1'
-uci set tinyproxy.@tinyproxy[0].Port='38888'
-uci set tinyproxy.@tinyproxy[0].enabled='1'
-uci commit tinyproxy
-/etc/init.d/tinyproxy disable
-
 
 # /etc/init.d/hd-idle stop
 # /etc/init.d/hd-idle disable
@@ -94,8 +72,7 @@ uci commit tinyproxy
 
 
 # 配置nps 
-/etc/init.d/nps stop
-/etc/init.d/nps disable
+
 uci set nps.@nps[0].enabled='0'
 uci set nps.@nps[0].server_addr='127.0.0.1'
 uci set nps.@nps[0].vkey='kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q'
@@ -156,7 +133,7 @@ uci set sfe.config.dns='1'
 uci set sfe.config.dns_server='114.114.114.114,114.114.115.115'
 uci commit sfe
 
-# 60 开启加速功能(新版)
+# 60 开启加速功能(新版,小米可以硬件加速)
 uci set flowoffload.@flow[0].bbr='0'
 uci set flowoffload.@flow[0].flow_offloading_hw='1'
 uci set flowoffload.@flow[0].dns='1'
@@ -174,19 +151,11 @@ uci commit flowoffload
 /etc/init.d/nlbwmon disable
 # /etc/init.d/etherwake disable
 # /etc/init.d/etherwake stop
-/etc/init.d/mwan3helper stop
-/etc/init.d/mwan3helper disable
-
-# 70 关闭打印
-/etc/init.d/usb_printer stop
-/etc/init.d/usb_printer disable
 
 
-# 90 hev-socks5-server 自定义,默认关闭开机启动 OK
-/etc/init.d/hev-socks5-server disable
 
 #90 关闭windows和office激活服务
-uci set vlmcsd.config.enabled='0'
+uci set vlmcsd.config.enabled='1'
 uci commit vlmcsd
 #/etc/init.d/kms disable
 #/etc/init.d/kms stop
@@ -196,8 +165,7 @@ uci commit vlmcsd
 
 # /etc/init.d/ipsec stop
 # /etc/init.d/ipsec disable
-# /etc/init.d/zerotier stop
-# /etc/init.d/zerotier disable
+
 uci set zerotier.sample_config.enabled='1'
 uci set zerotier.sample_config.nat='1'
 uci add_list zerotier.sample_config.join='88503383904247de'
@@ -241,45 +209,17 @@ uci commit udptools
 /etc/init.d/udptools stop
 /etc/init.d/udptools disable
 
-/etc/init.d/baidupcs-web stop
-/etc/init.d/baidupcs-web disable
-
-/etc/init.d/transmission stop
-/etc/init.d/transmission disable
 
 /etc/init.d/e2guardian stop
 /etc/init.d/e2guardian disable
 
-/etc/init.d/gost stop
-/etc/init.d/gost disable
+
 
 # 94 关闭 miniupnpd
 # /etc/init.d/miniupnpd stop
 # /etc/init.d/miniupnpd disable
 # /etc/init.d/gpio_switch disable
 
-# 95 privoxy 自定义
-uci set privoxy.privoxy.permit_access='127.0.0.1'
-uci add_list privoxy.privoxy.permit_access='10.0.0.0/8'
-uci add_list privoxy.privoxy.permit_access='172.16.0.0/12'
-uci add_list privoxy.privoxy.permit_access='192.168.0.0/16'
-uci add_list privoxy.privoxy.permit_access='0.0.0.0/0'
-uci set privoxy.privoxy.listen_address='0.0.0.0:38118'
-uci set privoxy.system=system
-uci set privoxy.system.boot_delay='10'
-uci commit privoxy
-/etc/init.d/privoxy disable
-
-#/etc/init.d/ddns stop
-#/etc/init.d/ddns disable
-#/etc/init.d/xlnetacc stop
-#/etc/init.d/xlnetacc disable
-/etc/init.d/rclone stop
-/etc/init.d/rclone disable
-
-# 96 关闭led驱动 OK
-# /etc/init.d/led stop
-# /etc/init.d/led disable
 
 # 97 关闭防火墙广告
 # /etc/init.d/unblockmusic stop
@@ -290,99 +230,12 @@ uci commit privoxy
 /etc/init.d/watchcat stop
 /etc/init.d/watchcat disable
 
-# 99 关闭内网穿透服务OK
-/etc/init.d/frp stop
-/etc/init.d/frp disable
+# 99 内网穿透服务
+
 uci set frp.common.server_addr='127.0.0.1'
 uci set frp.common.token='kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q'
 uci set frp.common.enabled='0'
 uci commit frp
-
-# 99 关闭内网穿透frps服务端
-/etc/init.d/frps stop
-/etc/init.d/frps disable
-
-# 99 关闭netdata，其实大部分用不上
-/etc/init.d/netdata disable
-/etc/init.d/netdata stop
-
-
-# 99 配置v2ray_server
-# /etc/init.d/v2ray_server disable
-# /etc/init.d/v2ray_server stop
-uci set v2ray_server.@global[0].enable='0'
-uci set v2ray_server.@user[0].remarks='v2ray'
-uci set v2ray_server.@user[0].port='38888'
-uci set v2ray_server.@user[0].VMess_id=`cat /proc/sys/kernel/random/uuid`
-
-uci add v2ray_server user
-uci set v2ray_server.@user[1]=user
-uci set v2ray_server.@user[1].remarks='socks5'
-uci set v2ray_server.@user[1].protocol='socks'
-uci set v2ray_server.@user[1].Socks_user='lean'
-uci set v2ray_server.@user[1].Socks_pass='password'
-uci set v2ray_server.@user[1].VMess_level='1'
-uci set v2ray_server.@user[1].enable='1'
-uci set v2ray_server.@user[1].port='31080'
-
-uci add v2ray_server user
-uci set v2ray_server.@user[2]=user
-uci set v2ray_server.@user[2].enable='1'
-uci set v2ray_server.@user[2].remarks='http'
-uci set v2ray_server.@user[2].port='38080'
-uci set v2ray_server.@user[2].protocol='http'
-uci set v2ray_server.@user[2].Http_user='lean'
-uci set v2ray_server.@user[2].Http_pass='password'
-uci set v2ray_server.@user[2].VMess_level='1'
-
-uci commit v2ray_server
-
-# /etc/init.d/ttyd disable
-# /etc/init.d/ttyd stop
-# /etc/init.d/urandom_seed disable
-# /etc/init.d/urandom_seed stop
-
-#99 默认开启polipo
-uci set polipo.general.allowedClients='10.0.0.0/8'
-uci add_list polipo.general.allowedClients='172.16.0.0/12'
-uci add_list polipo.general.allowedClients='192.168.0.0/16'
-uci add_list polipo.general.allowedClients='0.0.0.0/0'
-#uci set polipo.general.authCredentials='sanjin:sanjin'
-uci set polipo.general.proxyPort='8080'
-uci set polipo.general.allowedPorts='1-65535'
-uci set polipo.general.tunnelAllowedPorts='1-65535'
-/etc/init.d/polipo start
-/etc/init.d/polipo enable
-
-/etc/init.d/vnstat stop
-/etc/init.d/vnstat disable
-
-# 99 自定义负载均衡
-/etc/init.d/haproxy stop
-/etc/init.d/haproxy disable
-
-
-/etc/init.d/transmission stop
-/etc/init.d/transmission disable
-/etc/init.d/kodexplorer stop
-/etc/init.d/kodexplorer disable
-/etc/init.d/qbittorrent stop
-/etc/init.d/qbittorrent disable
-/etc/init.d/softethervpn stop
-/etc/init.d/softethervpn disable
-/etc/init.d/aria2 stop
-/etc/init.d/aria2 disable
-/etc/init.d/amule stop
-/etc/init.d/amule disable
-
-/etc/init.d/clash stop
-/etc/init.d/clash disable
-
-/etc/init.d/openclash stop
-/etc/init.d/openclash disable
-
-/etc/init.d/passwall stop
-/etc/init.d/passwall disable
 
 
 ### 4.3.5 安装开机脚本
