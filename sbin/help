@@ -46,6 +46,8 @@ hfrp () {
 
     routename=`uci get system.@system[0].hostname`
     lanipaddr=`uci get network.lan.ipaddr`
+    echo $lanipaddr miwifi.com > /tmp/hosts/miwifi
+    service dnsmasq restart
 
 cat > /var/etc/frp/hfrpc.conf<< TEMPEOF
 [common]
