@@ -286,7 +286,8 @@ start_tyyd_httpds () {
 
 boothelp () {
 ping -c 2 114.114.114.114
-        if [[ $? != 0 ]];then     
+        if [[ $? != 0 ]]
+	then     
                 echo " ping fail "
                 sleep 5
         else        
