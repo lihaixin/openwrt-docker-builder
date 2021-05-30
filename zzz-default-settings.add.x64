@@ -2,7 +2,7 @@
 # 根据网卡信息生成主机名
 # routename=`cat /proc/sys/kernel/random/uuid | cut -c1-8`
 # routename=$(ifconfig eth0|grep eth0|awk '{print $5}' | cut -c13-17 | sed 's/://g')
-routename=X64_$(ip address show dev eth0 | grep link | awk '{print $2}' | cut -c13-17 | sed 's/://g' | tr 'A-Z' 'a-z')
+routename=x64_$(ip address show dev eth0 | grep link | awk '{print $2}' | cut -c13-17 | sed 's/://g' | tr 'A-Z' 'a-z')
 uci set system.@system[0].hostname=$routename
 uci commit system
 
@@ -94,8 +94,6 @@ uci commit tinyproxy
 
 
 # 配置nps 
-/etc/init.d/nps stop
-/etc/init.d/nps disable
 uci set nps.@nps[0].enabled='0'
 uci set nps.@nps[0].server_addr='127.0.0.1'
 uci set nps.@nps[0].vkey='kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q'
