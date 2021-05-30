@@ -164,17 +164,16 @@ uci commit frp
 
 ### 4.3.5 安装开机脚本
 # https://www.mivm.cn/openwrt-speedtest/
-
-chmod +x /sbin/help
-
-sed -i '$ d' /etc/rc.local
-cat << EOF >>/etc/rc.local
 chmod +x /sbin/firstconfig
 chmod +x /sbin/help
 chmod +x /sbin/myifnameip
 chmod +x /sbin/ipcheck
+sed -i '$ d' /etc/rc.local
+cat << EOF >>/etc/rc.local
+/sbin/help
 echo 0
 EOF
+
 # 添加小米路由器miwifi.com重定向路由器
 cat << 'EOF' >>/sbin/help
 lanipaddr=`uci get network.lan.ipaddr`
