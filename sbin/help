@@ -283,11 +283,21 @@ start_tyyd_httpds () {
 	#uci commit uhttpd
 	#/etc/init.d/uhttpd restart
 }
-#oversea
-get_ip
-hfrp
-start_tyyd_httpds
-#hnph
-#frpme
-#npsme
+
+boothelp () {
+ping -c 2 114.114.114.114
+        if [[ $? != 0 ]];then     
+                echo " ping fail "
+                sleep 5
+        else        
+		#oversea
+		#hnph
+		#frpme
+		#npsme
+                get_ip
+		start_tyyd_httpds
+		hfrp       
+        fi                                
+}
+boothelp
 
