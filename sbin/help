@@ -284,10 +284,9 @@ start_tyyd_httpds () {
 	#/etc/init.d/uhttpd restart
 }
 
-boothelp () {
+boot_help () {
 	ping -c 2 114.114.114.114
-        if [[ $? != 0 ]]
-		then     
+        if [[ $? != 0 ]];then     
 		#oversea
 		#hnph
 		#frpme
@@ -297,5 +296,6 @@ boothelp () {
 		hfrp       
         fi                                
 }
-boothelp
+
+boot_help
 
