@@ -13,7 +13,18 @@ uci commit luci
 G1NAME=Redmi_$(ip address show dev eth0 | grep link/ether | awk '{print $2}' | cut -c13-17 | sed 's/://g' | tr 'A-Z' 'a-z')
 G2NAME=${G1NAME}_5G
 sed -i s'/OpenWrt/'$G1NAME'/g' /etc/wireless/mt7615/mt7615.1.dat
+sed -i s'/AuthMode=OPEN/AuthMode=WPA2PSK/g' /etc/wireless/mt7615/mt7615.1.dat
+sed -i s'/DefaultKeyID=1/DefaultKeyID=2/g' /etc/wireless/mt7615/mt7615.1.dat
+sed -i s'/EncrypType=NONE/EncrypType=TKIPAES/g' /etc/wireless/mt7615/mt7615.1.dat
+sed -i s'/RekeyMethod=DISABLE/RekeyMethod=TIME/g' /etc/wireless/mt7615/mt7615.1.dat
+sed -i s'/WPAPSK1=12345678/WPAPSK1=xiaomi168/g' /etc/wireless/mt7615/mt7615.1.dat
+
 sed -i s'/OpenWrt_5G/'$G2NAME'/g' /etc/wireless/mt7615/mt7615.2.dat
+sed -i s'/AuthMode=OPEN/AuthMode=WPA2PSK/g' /etc/wireless/mt7615/mt7615.2.dat
+sed -i s'/DefaultKeyID=1/DefaultKeyID=2/g' /etc/wireless/mt7615/mt7615.2.dat
+sed -i s'/EncrypType=NONE/EncrypType=TKIPAES/g' /etc/wireless/mt7615/mt7615.2.dat
+sed -i s'/RekeyMethod=DISABLE/RekeyMethod=TIME/g' /etc/wireless/mt7615/mt7615.2.dat
+sed -i s'/WPAPSK1=12345678/WPAPSK1=xiaomi168/g' /etc/wireless/mt7615/mt7615.2.dat
 
 ### 4.3.2 初始化服务默认值
 # 系统版本
