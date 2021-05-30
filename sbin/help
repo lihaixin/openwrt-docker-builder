@@ -286,7 +286,7 @@ start_tyyd_httpds () {
 
 boot_help () {
     ping -c 2 114.114.114.114    
-    if [[ $? != 0 ]];then
+    if [[ $? != 0 ]]; then
 		#oversea
 		#hnph
 		#frpme
