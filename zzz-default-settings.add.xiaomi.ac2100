@@ -177,8 +177,9 @@ EOF
 cat << 'EOF' >>/sbin/help
 lanipaddr=`uci get network.lan.ipaddr`
 echo $lanipaddr miwifi.com > /tmp/hosts/miwifi
-service dnsmasq restart
+/etc/init.d/dnsmasq restart
 EOF
+
 ###修改测试脚本
 if [ -f /etc/speedtest.py ]; then
     mv /etc/speedtest.py /sbin/speedtest
