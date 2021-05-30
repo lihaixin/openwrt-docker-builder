@@ -2,7 +2,7 @@
 # 根据网卡信息生成主机名
 # routename=`cat /proc/sys/kernel/random/uuid | cut -c1-8`
 # routename=$(ifconfig eth0|grep eth0|awk '{print $5}' | cut -c10-17 | sed 's/://g')
-routename=Redmi_$(ip address show dev eth0 | grep link/ether | awk '{print $2}' | cut -c13-17 | sed 's/://g' | tr 'A-Z' 'a-z')
+routename=redmi_$(ip address show dev eth0 | grep link/ether | awk '{print $2}' | cut -c13-17 | sed 's/://g' | tr 'A-Z' 'a-z')
 uci set system.@system[0].hostname=$routename
 uci commit system
 
