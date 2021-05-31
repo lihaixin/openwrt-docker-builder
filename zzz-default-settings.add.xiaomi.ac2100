@@ -9,7 +9,7 @@ uci commit system
 uci set luci.main.mediaurlbase='/luci-static/argon'
 uci commit luci
 
-#修改wifi默认名称
+# 修改wifi默认名称和默认密码
 G1NAME=Xiaomi_$(ip address show dev eth0 | grep link/ether | awk '{print $2}' | cut -c13-17 | sed 's/://g' | tr 'A-Z' 'a-z')
 sed -i s'/OpenWrt/'$G1NAME'/g' /etc/wireless/mt7615/mt7615.1.dat
 sed -i s'/AuthMode=OPEN/AuthMode=WPA2PSK/g' /etc/wireless/mt7615/mt7615.1.dat
@@ -30,7 +30,7 @@ sed -i s'/WPAPSK1=12345678/WPAPSK1=xiaomi168/g' /etc/wireless/mt7615/mt7615.2.da
 # 系统版本
 # echo 0xDEADBEEF > /etc/config/google_fu_mode
 sed -i '/DISTRIB_REVISION/d' /etc/openwrt_release
-echo "DISTRIB_REVISION='R21.04.18 Compliled by SANJIN `TZ=UTC-8 date "+%Y-%m-%d %H:%M:%S"`'" >> /etc/openwrt_release
+echo "DISTRIB_REVISION='R21.06.1 Compliled by SANJIN `TZ=UTC-8 date "+%Y-%m-%d %H:%M:%S"`'" >> /etc/openwrt_release
 
 # 配置初始化密码
 # echo 'admin:x:0:0:root:/root:/bin/ash' >> /etc/passwd
@@ -148,8 +148,8 @@ uci commit udptools
 
 
 # 94 关闭 miniupnpd
-# /etc/init.d/miniupnpd stop
-# /etc/init.d/miniupnpd disable
+/etc/init.d/miniupnpd stop
+/etc/init.d/miniupnpd disable
 # /etc/init.d/gpio_switch disable
 
 
