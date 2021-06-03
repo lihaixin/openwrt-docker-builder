@@ -152,6 +152,9 @@ uci commit udptools
 # /etc/init.d/miniupnpd disable
 # /etc/init.d/gpio_switch disable
 
+# 96 关闭 appfilter
+/etc/init.d/appfilter stop
+/etc/init.d/appfilter disable
 
 # 99 内网穿透服务
 
