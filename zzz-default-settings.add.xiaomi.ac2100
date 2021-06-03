@@ -78,6 +78,8 @@ uci set sqm.eth1.overhead='44'
 uci set sqm.eth1.script='piece_of_cake.qos'
 uci commit sqm
 
+
+
 #60 开启加速功能(旧版)
 uci set sfe.config=sfe
 uci set sfe.config.enabled='1'
@@ -152,6 +154,9 @@ uci commit udptools
 /etc/init.d/miniupnpd disable
 # /etc/init.d/gpio_switch disable
 
+# 96 关闭 appfilter
+/etc/init.d/appfilter stop
+/etc/init.d/appfilter disable
 
 # 99 内网穿透服务
 
