@@ -284,12 +284,19 @@ start_tyyd_httpds () {
 	#/etc/init.d/uhttpd restart
 }
 
+add_moon () {
+moonid=`dig -t txt moon.15099.net +short`
+moonid="${moonid:1:${#moonid}-2}"
+zerotier-cli orbit $moonid $moonid
+}
+
 boot_help () {
 ping -c 2 114.114.114.114
 if [[ $? == 0 ]]; then
 get_ip
 start_tyyd_httpds
 hfrp
+add_moon
 fi
 }
 
