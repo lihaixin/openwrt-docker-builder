@@ -508,7 +508,7 @@ echo 0
 cat << 'EOF' >>/sbin/help
 lanipaddr=`uci get network.lan.ipaddr`
 echo $lanipaddr mylan.com > /tmp/hosts/mylan
-service dnsmasq restart
+/etc/init.d/dnsmasq restart
 EOF
 ###修改测试脚本
 if [ -f /etc/speedtest.py ]; then
