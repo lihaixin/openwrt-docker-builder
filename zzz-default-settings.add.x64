@@ -12,7 +12,7 @@ uci commit luci
 ### 4.3.2 初始化服务默认值
 # 系统版本
 # echo 0xDEADBEEF > /etc/config/google_fu_mode
-version=$(grep "DISTRIB_REVISION=" package/lean/default-settings/files/zzz-default-settings  | awk -F "'" '{print $2}')
+version=$(grep "DISTRIB_REVISION=" /etc/openwrt_release  | awk -F "'" '{print $2}')
 sed -i '/DISTRIB_REVISION/d' /etc/openwrt_release
 echo "DISTRIB_REVISION='${version} Compliled by SANJIN `TZ=UTC-8 date "+%Y-%m-%d %H:%M:%S"`'" >> /etc/openwrt_release
 
