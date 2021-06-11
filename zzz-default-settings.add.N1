@@ -503,7 +503,6 @@ chmod +x /sbin/ipcheck
 sed -i '$ d' /etc/rc.local
 cat << EOF >>/etc/rc.local
 /sbin/help
-/sbin/firstconfig
 echo 0
 
 # 添加X64软路由器mylan.com重定向路由器
