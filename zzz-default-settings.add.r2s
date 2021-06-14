@@ -1,0 +1,197 @@
+### 4.3.1 配置路由器主机名和样式
+# 根据网卡信息生成主机名
+# routename=`cat /proc/sys/kernel/random/uuid | cut -c1-8`
+# routename=$(ifconfig eth0|grep eth0|awk '{print $5}' | cut -c10-17 | sed 's/://g')
+routename=r2s_$(ip address show dev eth0 | grep link/ether | awk '{print $2}' | cut -c13-17 | sed 's/://g' | tr 'A-Z' 'a-z')
+uci set system.@system[0].hostname=$routename
+uci commit system
+
+uci set luci.main.mediaurlbase='/luci-static/argon'
+uci commit luci
+
+# 修改wifi默认名称和默认密码
+G1NAME=Xiaomi_$(ip address show dev eth0 | grep link/ether | awk '{print $2}' | cut -c13-17 | sed 's/://g' | tr 'A-Z' 'a-z')
+sed -i s'/OpenWrt/'$G1NAME'/g' /etc/wireless/mt7615/mt7615.1.dat
+sed -i s'/AuthMode=OPEN/AuthMode=WPA2PSK/g' /etc/wireless/mt7615/mt7615.1.dat
+sed -i s'/DefaultKeyID=1/DefaultKeyID=2/g' /etc/wireless/mt7615/mt7615.1.dat
+sed -i s'/EncrypType=NONE/EncrypType=TKIPAES/g' /etc/wireless/mt7615/mt7615.1.dat
+sed -i s'/RekeyMethod=DISABLE/RekeyMethod=TIME/g' /etc/wireless/mt7615/mt7615.1.dat
+sed -i s'/WPAPSK1=12345678/WPAPSK1=xiaomi168/g' /etc/wireless/mt7615/mt7615.1.dat
+
+G2NAME=${G1NAME}_5G
+sed -i s'/OpenWrt_5G/'$G2NAME'/g' /etc/wireless/mt7615/mt7615.2.dat
+sed -i s'/AuthMode=OPEN/AuthMode=WPA2PSK/g' /etc/wireless/mt7615/mt7615.2.dat
+sed -i s'/DefaultKeyID=1/DefaultKeyID=2/g' /etc/wireless/mt7615/mt7615.2.dat
+sed -i s'/EncrypType=NONE/EncrypType=TKIPAES/g' /etc/wireless/mt7615/mt7615.2.dat
+sed -i s'/RekeyMethod=DISABLE/RekeyMethod=TIME/g' /etc/wireless/mt7615/mt7615.2.dat
+sed -i s'/WPAPSK1=12345678/WPAPSK1=xiaomi168/g' /etc/wireless/mt7615/mt7615.2.dat
+
+### 4.3.2 初始化服务默认值
+# 系统版本
+# echo 0xDEADBEEF > /etc/config/google_fu_mode
+version=$(grep "DISTRIB_REVISION=" /etc/openwrt_release  | awk -F "'" '{print $2}')
+sed -i '/DISTRIB_REVISION/d' /etc/openwrt_release
+echo "DISTRIB_REVISION='${version} Compliled by SANJIN `TZ=UTC-8 date "+%Y-%m-%d %H:%M:%S"`'" >> /etc/openwrt_release
+
+# 配置初始化密码
+# echo 'admin:x:0:0:root:/root:/bin/ash' >> /etc/passwd
+# echo -e "admin\nadmin" | (passwd admin)
+echo -e "password\npassword" | (passwd root)
+
+### 4.3.3 配置默认启动的服务和初始化
+
+# 配置不常用的服务默认不启动,等真正需要时在启动
+# 配置默认初始化
+
+# 19 调整ssh 默认端口
+uci set dropbear.@dropbear[0].Port='22122'
+uci commit dropbear
+
+
+# 35 配置路由器默认DNS缓存从默认150调整到1024,使用dnscache缓存
+# uci set dhcp.@dnsmasq[0].allservers='1' <--现在使用pdnd作为上流dns，所以不开启
+uci set dhcp.@dnsmasq[0].cachesize='0'
+uci set dhcp.@dnsmasq[0].mini_ttl='0'
+uci set dhcp.lan.start='11'
+uci set dhcp.lan.limit='99'
+uci set dhcp.lan.force='1'
+uci commit dhcp
+
+
+# 配置nps 
+
+uci set nps.@nps[0].enabled='0'
+uci set nps.@nps[0].server_addr='127.0.0.1'
+uci set nps.@nps[0].vkey='kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q'
+uci commit nps
+
+
+# 50 配置web 支持 https 访问
+# uci set uhttpd.main.index_page='cgi-bin/luci'
+# uci set uhttpd.main.listen_https='0.0.0.0:44344'
+# uci commit uhttpd
+
+
+#50 自定义SQM
+uci set sqm.eth1.qdisc='cake'
+uci set sqm.eth1.linklayer='ethernet'
+uci set sqm.eth1.overhead='44'
+uci set sqm.eth1.script='piece_of_cake.qos'
+uci commit sqm
+
+
+
+#60 开启加速功能(旧版)
+uci set sfe.config=sfe
+uci set sfe.config.enabled='1'
+uci set sfe.config.wifi='0'
+uci set sfe.config.ipv6='0'
+uci set sfe.config.bbr='0'
+uci set sfe.config.dns='1'
+uci set sfe.config.dns_server='114.114.114.114,114.114.115.115'
+uci commit sfe
+
+# 60 开启加速功能(新版,小米可以硬件加速)
+uci set flowoffload.@flow[0].bbr='0'
+uci set flowoffload.@flow[0].flow_offloading_hw='1'
+uci set flowoffload.@flow[0].dns='1'
+uci set flowoffload.@flow[0].dns_server='114.114.114.114,114.114.115.115'
+uci commit flowoffload
+
+# 60 关闭网络共享 和网络唤醒
+/etc/init.d/xl2tpd stop
+/etc/init.d/xl2tpd disable
+
+#90 关闭windows和office激活服务
+uci set vlmcsd.config.enabled='1'
+uci commit vlmcsd
+
+uci set zerotier.sample_config.enabled='1'
+uci set zerotier.sample_config.nat='1'
+uci add_list zerotier.sample_config.join='88503383904247de'
+uci del_list zerotier.sample_config.join='8056c2e21c000001'
+uci commit zerotier
+/etc/init.d/zerotier enable
+/etc/init.d/zerotier start
+
+# 90 配置shadowsocksr 默认参数
+# uci set shadowsocksr.@global[0].global_server='cfg064a8f'
+uci set shadowsocksr.@global[0].dports='1'
+uci set shadowsocksr.@global[0].run_mode='route'
+uci set shadowsocksr.@global[0].tunnel_forward='8.8.8.8:53'
+# uci add shadowsocksr servers
+# uci set shadowsocksr.@servers[0]=servers
+# uci set shadowsocksr.@servers[0].type='v2ray'
+# uci set shadowsocksr.@servers[0].alias='v2ray-ha'
+# uci set shadowsocksr.@servers[0].server='127.0.0.1'
+# uci set shadowsocksr.@servers[0].server_port='2222'
+# uci set shadowsocksr.@servers[0].alter_id='233'
+# uci set shadowsocksr.@servers[0].vmess_id='36cc0413-0620-4ff7-b92d-6b99bd6c91d3'
+# uci set shadowsocksr.@servers[0].security='auto'
+# uci set shadowsocksr.@servers[0].transport='tcp'
+# uci set shadowsocksr.@servers[0].tcp_guise='none'
+# uci set shadowsocksr.@servers[0].mux='1'
+# uci set shadowsocksr.@servers[0].concurrency='8'
+# uci set shadowsocksr.@servers[0].switch_enable='0'
+# uci set shadowsocksr.@servers[0].local_port='1234'
+
+uci commit shadowsocksr
+
+# 90 关闭udptool工具 开启wireguard才用到
+uci set udptools.@udpconfig[0].enable='0'
+uci set udptools.@udpconfig[0].server='1.1.1.1'
+uci set udptools.@udpconfig[0].serverport='15900'
+uci set udptools.@udpconfig[0].password='pwd'
+uci set udptools.@udpconfig[0].clientport='15900'
+uci set udptools.@udpconfig[0].fec='2:2'
+uci set udptools.@udpconfig[0].timeout='1'
+uci commit udptools
+/etc/init.d/udptools stop
+/etc/init.d/udptools disable
+
+
+# 94 关闭 miniupnpd
+/etc/init.d/miniupnpd stop
+/etc/init.d/miniupnpd disable
+# /etc/init.d/gpio_switch disable
+
+# 96 关闭 appfilter
+/etc/init.d/appfilter stop
+/etc/init.d/appfilter disable
+
+# 99 内网穿透服务
+
+uci set frp.common.server_addr='127.0.0.1'
+uci set frp.common.token='kbEwlNnKytsg28gfvseCmP5pU8Vqo0c1rrlHfsi3Q'
+uci set frp.common.enabled='0'
+uci commit frp
+
+
+### 4.3.5 安装开机脚本
+# https://www.mivm.cn/openwrt-speedtest/
+chmod +x /sbin/firstconfig
+chmod +x /sbin/help
+chmod +x /sbin/myifnameip
+chmod +x /sbin/ipcheck
+sed -i '$ d' /etc/rc.local
+cat << EOF >>/etc/rc.local
+/sbin/help
+echo 0
+EOF
+
+# 添加小米路由器miwifi.com重定向路由器
+cat << 'EOF' >>/sbin/help
+lanipaddr=`uci get network.lan.ipaddr`
+echo $lanipaddr miwifi.com > /tmp/hosts/miwifi
+/etc/init.d/dnsmasq restart
+EOF
+
+###修改测试脚本
+if [ -f /etc/speedtest.py ]; then
+    mv /etc/speedtest.py /sbin/speedtest
+    sleep 1
+    mv /etc/udpping.py /sbin/udpping
+    sleep 1
+    chmod +x /sbin/udpping
+    chmod +x /sbin/speedtest
+fi
